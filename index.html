@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>魔術方塊解題入口</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./home-page.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="home">
+    <section class="hero">
+      <h1>魔術方塊解題器</h1>
+      <p>選擇你要解的尺寸，進入對應的 3D 教學解題頁。</p>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <div class="preview" id="preview2"></div>
+        <h2>2x2 解題</h2>
+        <p>支援貼紙上色輸入、可解狀態檢查、逐步播放。</p>
+        <a class="go" href="./two-by-two.html">進入 2x2</a>
+      </article>
+
+      <article class="card">
+        <div class="preview" id="preview3"></div>
+        <h2>3x3 解題</h2>
+        <p>輸入打亂公式，產生反解步驟，逐步復原展示。</p>
+        <a class="go" href="./three-by-three.html">進入 3x3</a>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="./home-page.js"></script>
+</body>
+</html>

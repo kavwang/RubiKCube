@@ -1,0 +1,11 @@
+{
+  "name": "rubik-cube-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.js tests/smoke/*.test.js",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:smoke": "node --test tests/smoke/*.test.js"
+  }
+}
