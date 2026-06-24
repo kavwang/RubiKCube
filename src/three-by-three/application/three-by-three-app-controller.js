@@ -21,6 +21,7 @@ export class ThreeByThreeAppController {
     this.solutionPhases = [];
     this.currentStep = 0;
     this.stickerState = new Map();
+    this.initialStickerState = null;
 
     this.bindElements();
     this.view = new ThreeByThreeCubeView({
@@ -108,7 +109,12 @@ export class ThreeByThreeAppController {
     this.resetBtn.addEventListener("click", () => {
       if (this.animationBusy) return;
       this.resetToSolvedState();
-      for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
+      if (this.initialStickerState) {
+        this.view.setStickerState(this.initialStickerState);
+        this.stickerState = new Map(this.initialStickerState);
+      } else {
+        for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
+      }
       this.currentStep = 0;
       this.renderSteps();
       this.updateButtons();
@@ -198,17 +204,29 @@ export class ThreeByThreeAppController {
   solveCurrentScramble() {
     if (this.animationBusy) return;
 
-    const parsed = this.engine.parseMoves(this.scrambleInputEl.value);
-    if (!parsed.ok) {
-      this.setStatus(parsed.message);
-      return;
+    let scrambleState;
+    if (this.currentMode === "edit") {
+      const decoded = this.engine.decodeCubeFromStickers(this.stickerState);
+      if (!decoded.ok) {
+        this.setStatus(decoded.message);
+        return;
+      }
+      scrambleState = decoded.state;
+      this.initialStickerState = new Map(this.stickerState);
+      this.scrambleMoves = [];
+    } else {
+      const parsed = this.engine.parseMoves(this.scrambleInputEl.value);
+      if (!parsed.ok) {
+        this.setStatus(parsed.message);
+        return;
+      }
+      this.scrambleMoves = parsed.moves;
+      this.resetToSolvedState();
+      for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
+      scrambleState = this.engine.applyMovesToSolvedFacelets(this.scrambleMoves);
+      this.initialStickerState = null;
     }
 
-    this.scrambleMoves = parsed.moves;
-    this.resetToSolvedState();
-    for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
-
-    const scrambleState = this.engine.applyMovesToSolvedFacelets(this.scrambleMoves);
     const plan = solveLblPlan(scrambleState, this.engine);
     if (!plan.ok) {
       this.setStatus(plan.message);
@@ -234,6 +252,7 @@ export class ThreeByThreeAppController {
     this.solutionMoves = [];
     this.solutionPhases = [];
     this.currentStep = 0;
+    this.initialStickerState = null;
     this.stepsListEl.innerHTML = "";
     this.stepCounterEl.textContent = "0 / 0";
     this.updateButtons();
@@ -268,7 +287,7 @@ export class ThreeByThreeAppController {
     const hasSolution = this.solutionMoves.length > 0;
     this.nextBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length || this.animationBusy;
     this.autoBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length;
-    this.resetBtn.disabled = !this.scrambleMoves.length || this.animationBusy;
+    this.resetBtn.disabled = (!this.scrambleMoves.length && !this.initialStickerState) || this.animationBusy;
   }
 
   async playOneStep() {

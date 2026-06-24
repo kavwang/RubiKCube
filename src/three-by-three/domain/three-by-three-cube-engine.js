@@ -250,6 +250,66 @@ export function createCubeEngine() {
     return `${move}（${faceName} ${turnText}）`;
   }
 
+  function decodeCubeFromStickers(stickerState) {
+    const counts = { U: 0, R: 0, F: 0, D: 0, L: 0, B: 0 };
+    const out = new Array(54);
+
+    for (let i = 0; i < 54; i += 1) {
+      const face = FACE_ORDER[Math.floor(i / 9)];
+      const row = Math.floor((i % 9) / 3);
+      const col = (i % 9) % 3;
+      let x = 0;
+      let y = 0;
+      let z = 0;
+
+      if (face === "U") {
+        x = col - 1;
+        y = 1;
+        z = row - 1;
+      } else if (face === "R") {
+        x = 1;
+        y = 1 - row;
+        z = 1 - col;
+      } else if (face === "F") {
+        x = col - 1;
+        y = 1 - row;
+        z = 1;
+      } else if (face === "D") {
+        x = col - 1;
+        y = -1;
+        z = 1 - row;
+      } else if (face === "L") {
+        x = -1;
+        y = 1 - row;
+        z = col - 1;
+      } else {
+        // B
+        x = 1 - col;
+        y = 1 - row;
+        z = -1;
+      }
+
+      const key = `${x},${y},${z}_${face}`;
+      const color = stickerState.get(key);
+      if (!color) {
+        return { ok: false, message: "有貼紙尚未上色，請先填滿所有格子。" };
+      }
+      counts[color] += 1;
+      out[i] = color;
+    }
+
+    for (const f of FACE_ORDER) {
+      if (counts[f] !== 9) {
+        return {
+          ok: false,
+          message: `顏色數量不正確：${f} 面顏色數量不是 9（目前為 ${counts[f]}）。`
+        };
+      }
+    }
+
+    return { ok: true, state: out };
+  }
+
   return {
     FACE_ORDER,
     SOLVED_FACELETS,
@@ -264,7 +324,8 @@ export function createCubeEngine() {
     isCubeSolved,
     parseMoves,
     makeRandomScramble,
-    describeMove
+    describeMove,
+    decodeCubeFromStickers
   };
 }
 
