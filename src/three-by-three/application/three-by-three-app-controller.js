@@ -1,6 +1,6 @@
 import { FACE_COLORS, FACE_ORDER } from "../domain/three-by-three-constants.js";
 import { createCubeEngine } from "../domain/three-by-three-cube-engine.js";
-import { solveLblPlan } from "../domain/three-by-three-lbl-solver.js";
+import { solveLblPlan, solveFastestPlan } from "../domain/three-by-three-lbl-solver.js";
 import { ThreeByThreeCubeView } from "../infrastructure/three-by-three-cube-view.js";
 
 function wait(ms) {
@@ -258,7 +258,9 @@ export class ThreeByThreeAppController {
       this.initialStickerState = null;
     }
 
-    const plan = solveLblPlan(scrambleState, this.engine);
+    const plan = this.solverMethod === "lbl"
+      ? solveLblPlan(scrambleState, this.engine)
+      : solveFastestPlan(scrambleState, this.engine);
     if (!plan.ok) {
       this.setStatus(plan.message);
       this.clearSolutionView();
@@ -274,7 +276,8 @@ export class ThreeByThreeAppController {
     if (!this.solutionMoves.length) {
       this.setStatus("目前已是復原狀態。");
     } else {
-      this.setStatus(`已產生 LBL 解法，共 ${this.solutionMoves.length} 步。`);
+      const methodLabel = this.solverMethod === "lbl" ? "LBL" : "最速";
+      this.setStatus(`已產生 ${methodLabel}解法，共 ${this.solutionMoves.length} 步。`);
     }
   }
 
