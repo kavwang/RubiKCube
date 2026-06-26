@@ -528,6 +528,8 @@ h1 {
 
 @media (max-width: 768px) {
   .app {
+    display: flex;
+    flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
@@ -538,28 +540,45 @@ h1 {
     display: block; /* Visible on mobile */
   }
 
-  .panel {
-    left: 12px;
-    bottom: 12px;
-    top: auto;
-    width: calc(100vw - 24px);
+  .viewer-wrap {
+    position: relative;
+    width: 100%;
     height: auto;
-    max-height: 70vh;
-    border-radius: 24px;
+    flex: 1;
+    min-height: 35vh;
+    z-index: 1;
+  }
+
+  .panel {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    top: auto;
+    width: 100%;
+    height: 52vh;
+    max-height: 65vh;
+    border-radius: 24px 24px 0 0;
     margin: 0;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
-    padding: 16px 20px 20px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.55);
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    z-index: 10;
+    flex-shrink: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Collapsed panel state on mobile */
   .panel.collapsed {
-    max-height: 110px;
+    height: calc(72px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     overflow: hidden;
-    padding-bottom: 16px;
   }
 
   .panel.collapsed .mode-toggle-container,
   .panel.collapsed .mode-section,
+  .panel.collapsed .status-container,
   .panel.collapsed .steps-container {
     display: none !important;
   }

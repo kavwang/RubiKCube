@@ -109,11 +109,14 @@ export class CubeView {
       this.isUserInteracting = false;
     });
 
-    window.addEventListener("resize", () => {
-      this.camera.aspect = this.viewerEl.clientWidth / this.viewerEl.clientHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(this.viewerEl.clientWidth, this.viewerEl.clientHeight);
+    const resizeObserver = new ResizeObserver(() => {
+      if (this.viewerEl.clientWidth && this.viewerEl.clientHeight) {
+        this.camera.aspect = this.viewerEl.clientWidth / this.viewerEl.clientHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.viewerEl.clientWidth, this.viewerEl.clientHeight);
+      }
     });
+    resizeObserver.observe(this.viewerEl);
   }
 
   buildCubeFromState(stickerState) {
