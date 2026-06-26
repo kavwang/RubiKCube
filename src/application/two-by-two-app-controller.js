@@ -162,7 +162,7 @@ export class AppController {
       this.solveModeBtn.classList.remove("active");
       this.editPanel.classList.remove("hidden");
       this.solvePanel.classList.add("hidden");
-      this.view.setAutoRotateEnabled(true);
+      this.view.setAutoRotateEnabled(false);
       this.clearSolutionView();
       this.setStatus("編輯模式：請選取色票並點擊方塊貼紙上色。");
       return;

@@ -39,7 +39,7 @@ export class CubeView {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     this.lightTime = 0;
-    this.autoRotateEnabled = true;
+    this.autoRotateEnabled = false;
     this.isUserInteracting = false;
 
     this.cubeRoot = new THREE.Group();
