@@ -18,7 +18,10 @@ body {
   margin: 0;
   font-family: 'Outfit', "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   color: var(--text);
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 20% 20%, #172554 0%, transparent 38%),
+    radial-gradient(circle at 80% 75%, #0f766e 0%, transparent 35%),
+    var(--bg);
   overflow: hidden;
   position: relative;
   width: 100vw;

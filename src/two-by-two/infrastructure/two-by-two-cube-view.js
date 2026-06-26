@@ -21,12 +21,11 @@ export class CubeView {
     this.onStickerClick = onStickerClick;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color("#f2efe6");
 
     this.camera = new THREE.PerspectiveCamera(45, viewerEl.clientWidth / viewerEl.clientHeight, 0.1, 100);
     this.camera.position.set(3.8, 3.2, 4.3);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(viewerEl.clientWidth, viewerEl.clientHeight);
     this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     this.viewerEl.appendChild(this.renderer.domElement);

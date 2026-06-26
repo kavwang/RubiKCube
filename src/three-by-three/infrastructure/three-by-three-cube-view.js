@@ -9,12 +9,11 @@ export class ThreeByThreeCubeView {
     this.lightTime = 0;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color("#f2efe6");
 
     this.camera = new THREE.PerspectiveCamera(45, viewerEl.clientWidth / viewerEl.clientHeight, 0.1, 100);
     this.camera.position.set(7, 6, 8);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(viewerEl.clientWidth, viewerEl.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     viewerEl.appendChild(this.renderer.domElement);
