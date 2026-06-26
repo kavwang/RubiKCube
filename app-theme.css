@@ -26,9 +26,12 @@ body {
 }
 
 .app {
+  display: flex;
+  flex-direction: row;
   width: 100vw;
   height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 .panel-header {
@@ -79,11 +82,12 @@ h1 {
 }
 
 .panel {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  position: relative;
+  top: auto;
+  left: auto;
   width: 380px;
   height: calc(100vh - 40px);
+  margin: 20px 0 20px 20px;
   z-index: 10;
   padding: 24px;
   border: 1px solid var(--line);
@@ -96,6 +100,7 @@ h1 {
   flex-direction: column;
   overflow-y: auto;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
 /* Scrollbar styling for panel */
@@ -442,10 +447,10 @@ h1 {
 
 /* 3D Viewer */
 .viewer-wrap {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
-  width: 100vw;
+  flex: 1;
   height: 100vh;
   z-index: 1;
 }
