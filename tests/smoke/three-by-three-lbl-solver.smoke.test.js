@@ -6,7 +6,7 @@ import { solveLblPlan } from "../../src/three-by-three/domain/three-by-three-lbl
 
 test("LBL smoke: random scrambles should be solvable", () => {
   const engine = createCubeEngine();
-  const rounds = 12;
+  const rounds = 50;
 
   for (let i = 0; i < rounds; i += 1) {
     const scrambleText = engine.makeRandomScramble(20);
