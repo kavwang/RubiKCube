@@ -218,6 +218,90 @@ function solvePhase3(cpStart, coStart) {
   return null;
 }
 
+function solveOptimal2x2(cpStart, coStart) {
+  const getKey = (cp, co) => {
+    return cp.join("") + co.join("");
+  };
+
+  const startKey = getKey(cpStart, coStart);
+  const targetKey = "0123456700000000";
+
+  if (startKey === targetKey) {
+    return [];
+  }
+
+  const forwardVisited = new Map();
+  const backwardVisited = new Map();
+
+  forwardVisited.set(startKey, []);
+  backwardVisited.set(targetKey, []);
+
+  let forwardQueue = [{ cp: cpStart, co: coStart, key: startKey }];
+  let backwardQueue = [{ cp: [0, 1, 2, 3, 4, 5, 6, 7], co: [0, 0, 0, 0, 0, 0, 0, 0], key: targetKey }];
+
+  const invertPath = (path) => {
+    return path.slice().reverse().map((m) => Math.floor(m / 3) * 3 + (2 - (m % 3)));
+  };
+
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    if (forwardQueue.length <= backwardQueue.length) {
+      const nextQueue = [];
+      for (const node of forwardQueue) {
+        const path = forwardVisited.get(node.key);
+        const lastFace = path.length > 0 ? Math.floor(path[path.length - 1] / 3) : -1;
+
+        for (let mv = 0; mv < 18; mv += 1) {
+          const face = Math.floor(mv / 3);
+          if (face === lastFace) continue;
+
+          const nextCP = applyMoveCPMulti(node.cp, face, (mv % 3) + 1);
+          const nextCO = applyMoveCOMulti(node.co, face, (mv % 3) + 1);
+          const nextKey = getKey(nextCP, nextCO);
+
+          if (backwardVisited.has(nextKey)) {
+            const backPath = backwardVisited.get(nextKey);
+            return [...path, mv, ...invertPath(backPath)];
+          }
+
+          if (!forwardVisited.has(nextKey)) {
+            forwardVisited.set(nextKey, [...path, mv]);
+            nextQueue.push({ cp: nextCP, co: nextCO, key: nextKey });
+          }
+        }
+      }
+      forwardQueue = nextQueue;
+    } else {
+      const nextQueue = [];
+      for (const node of backwardQueue) {
+        const path = backwardVisited.get(node.key);
+        const lastFace = path.length > 0 ? Math.floor(path[path.length - 1] / 3) : -1;
+
+        for (let mv = 0; mv < 18; mv += 1) {
+          const face = Math.floor(mv / 3);
+          if (face === lastFace) continue;
+
+          const nextCP = applyMoveCPMulti(node.cp, face, (mv % 3) + 1);
+          const nextCO = applyMoveCOMulti(node.co, face, (mv % 3) + 1);
+          const nextKey = getKey(nextCP, nextCO);
+
+          if (forwardVisited.has(nextKey)) {
+            const forwardPath = forwardVisited.get(nextKey);
+            return [...forwardPath, ...invertPath([...path, mv])];
+          }
+
+          if (!backwardVisited.has(nextKey)) {
+            backwardVisited.set(nextKey, [...path, mv]);
+            nextQueue.push({ cp: nextCP, co: nextCO, key: nextKey });
+          }
+        }
+      }
+      backwardQueue = nextQueue;
+    }
+  }
+
+  return null;
+}
+
 // Self-check routine for sanity verification
 function runSelfChecks(solver) {
   for (let t = 0; t < 50; t += 1) {
@@ -249,6 +333,20 @@ function runSelfChecks(solver) {
 
     if (encodePerm(xcp) !== 0 || encodeOri(xco) !== 0) {
       throw new Error("Self-check failed: LBL returned sequence does not solve the cube.");
+    }
+
+    const resultOpt = solver.solve(cp, co, "fastest");
+    if (!resultOpt.ok) throw new Error("Self-check failed: Optimal solver did not return a solution.");
+    let xcpOpt = cp.slice();
+    let xcoOpt = co.slice();
+    for (const mv of resultOpt.moves) {
+      const face = Math.floor(mv / 3);
+      const turns = (mv % 3) + 1;
+      xcpOpt = applyMoveCPMulti(xcpOpt, face, turns);
+      xcoOpt = applyMoveCOMulti(xcoOpt, face, turns);
+    }
+    if (encodePerm(xcpOpt) !== 0 || encodeOri(xcoOpt) !== 0) {
+      throw new Error("Self-check failed: Optimal returned sequence does not solve the cube.");
     }
   }
 }
@@ -289,8 +387,22 @@ export class SolverService {
     }
   }
 
-  solve(cp, co) {
+  solve(cp, co, method = "lbl") {
     if (!this.ready) return { ok: false, message: "求解器尚未初始化。" };
+
+    if (method === "fastest") {
+      const optMoves = solveOptimal2x2(cp, co);
+      if (!optMoves) {
+        return { ok: false, message: "最速解求解失敗，請檢查顏色輸入。" };
+      }
+      return {
+        ok: true,
+        moves: optMoves,
+        phases: [
+          { name: "雙向尋優最速解", startIdx: 0, endIdx: optMoves.length }
+        ]
+      };
+    }
 
     // Run Phase 1: Solve U layer
     const phase1Moves = solvePhase1(cp, co);

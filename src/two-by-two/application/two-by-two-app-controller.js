@@ -229,7 +229,7 @@ export class AppController {
       return;
     }
 
-    const result = this.solver.solve(decoded.cp, decoded.co);
+    const result = this.solver.solve(decoded.cp, decoded.co, this.solverMethod);
     if (!result.ok) {
       this.setStatus(result.message);
       return;
