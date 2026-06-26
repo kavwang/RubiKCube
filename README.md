@@ -43,34 +43,44 @@
 
 ```text
 Rubik Cube/
-├─ index.html                  # 首頁
-├─ two-by-two.html                    # 2x2 頁面
-├─ three-by-three.html                    # 3x3 頁面
-├─ home-page.js / home-page.css          # 首頁互動與樣式
-├─ two-by-two.js                   # 2x2 入口（既有）
-├─ three-by-three.js                      # 3x3 入口（薄層）
-├─ app-theme.css                   # 共用主題樣式
-├─ three-by-three.css                     # 3x3 頁面補充樣式
-├─ start-local-server.bat      # 本機啟動（Windows）
-├─ start-local-server.ps1      # 本機啟動（PowerShell）
+├─ index.html                       # 首頁
+├─ two-by-two.html                  # 2x2 頁面
+├─ three-by-three.html              # 3x3 頁面
+├─ home-page.js / home-page.css     # 首頁互動與樣式
+├─ two-by-two.js                    # 2x2 入口頁面綁定
+├─ three-by-three.js                # 3x3 入口頁面綁定
+├─ app-theme.css                    # 共用科技感暗色系樣式（包含 iOS Toggle）
+├─ three-by-three.css               # 3x3 頁面補充樣式
+├─ start-local-server.bat           # 本機啟動（Windows）
+├─ start-local-server.ps1           # 本機啟動（PowerShell）
 ├─ src/
-│  ├─ ...                      # 2x2 既有 clean architecture 程式碼
-│  └─ three-by-three/
-│     ├─ three-by-three-main.js
+│  ├─ two-by-two/                   # 2x2 模組（Clean Architecture 結構）
+│  │  ├─ two-by-two-main.js          # 2x2 入口主控
+│  │  ├─ application/
+│  │  │  └─ two-by-two-app-controller.js   # 2x2 狀態與事件控制器
+│  │  ├─ config/
+│  │  │  └─ ...                      # 2x2 公式、移動轉換配置
+│  │  ├─ domain/
+│  │  │  └─ two-by-two-solver-service.js   # 2x2 LBL 與雙向 BFS 求解器
+│  │  └─ infrastructure/
+│  │     └─ two-by-two-cube-view.js        # 2x2 Three.js 3D 渲染與無旋轉鎖定
+│  └─ three-by-three/                 # 3x3 模組（Clean Architecture 結構）
+│     ├─ three-by-three-main.js     # 3x3 入口主控
 │     ├─ application/
-│     │  └─ three-by-three-app-controller.js  # UI 流程、事件、狀態管理
+│     │  └─ three-by-three-app-controller.js # 3x3 狀態與事件控制器
 │     ├─ domain/
-│     │  ├─ three-by-three-constants.js       # 常數、目標索引、公式宏
-│     │  ├─ three-by-three-cube-engine.js     # 狀態轉換、轉法與解析
-│     │  └─ three-by-three-lbl-solver.js      # 3x3 LBL 解題核心
+│     │  ├─ three-by-three-constants.js    # 常數、目標索引、公式宏
+│     │  ├─ three-by-three-cube-engine.js  # 狀態轉換、轉法與解析
+│     │  └─ three-by-three-lbl-solver.js   # 3x3 LBL 與雙階段最速解求解器
 │     └─ infrastructure/
-│        └─ three-by-three-cube-view.js # Three.js 3D 呈現與旋轉動畫
+│        └─ three-by-three-cube-view.js    # 3x3 Three.js 3D 渲染與動畫
 ├─ tests/
 │  ├─ unit/
 │  │  └─ three-by-three-cube-engine.test.js
 │  └─ smoke/
-│     └─ three-by-three-lbl-solver.smoke.test.js
-└─ package.json                # 測試 scripts
+│     ├─ three-by-three-lbl-solver.smoke.test.js
+│     └─ two-by-two-solver.smoke.test.js
+└─ package.json                     # 測試與執行 scripts
 ```
 
 ---
