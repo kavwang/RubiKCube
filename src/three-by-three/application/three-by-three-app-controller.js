@@ -196,12 +196,17 @@ export class ThreeByThreeAppController {
 
   setSolverMethod(method) {
     this.solverMethod = method;
+    const container = this.lblBtn.parentElement;
     if (method === "lbl") {
       this.lblBtn.classList.add("active");
       this.fastestBtn.classList.remove("active");
+      container.classList.add("lbl-active");
+      container.classList.remove("fastest-active");
     } else {
       this.fastestBtn.classList.add("active");
       this.lblBtn.classList.remove("active");
+      container.classList.add("fastest-active");
+      container.classList.remove("lbl-active");
     }
     this.clearSolutionView();
     this.setStatus(`已切換為：${method === "lbl" ? "LBL 分層解法" : "雙向最速解"}`);
