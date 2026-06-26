@@ -1,1 +1,1 @@
-import "./src/two-by-two-main.js";
+import "./src/two-by-two/two-by-two-main.js";

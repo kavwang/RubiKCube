@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { FACE_STYLE, LAYER_COORD, MOVE_FACE } from "../../config/two-by-two-constants.js";
+import { FACE_STYLE, LAYER_COORD, MOVE_FACE } from "../config/two-by-two-constants.js";
 
 const CUBE_COORDS = {
   URF: [1, 1, 1],

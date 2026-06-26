@@ -2,7 +2,7 @@ import { CORNERS, FACE_ORDER, FACE_STYLE, POS_FACES } from "../config/two-by-two
 import { cubieToStickerState, decodeCubeFromStickers, makeSolvedStickerState } from "../domain/two-by-two-cube-state.js";
 import { applyMoveCOMulti, applyMoveCPMulti, describeMove } from "../domain/two-by-two-moves.js";
 import { SolverService } from "../domain/two-by-two-solver-service.js";
-import { CubeView } from "../infrastructure/three/two-by-two-cube-view.js";
+import { CubeView } from "../infrastructure/two-by-two-cube-view.js";
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
