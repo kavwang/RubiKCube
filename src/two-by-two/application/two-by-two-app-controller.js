@@ -23,6 +23,7 @@ export class AppController {
     this.currentMode = "edit";
     this.animationBusy = false;
     this.playing = false;
+    this.solverMethod = "lbl";
 
     this.stickerState = makeSolvedStickerState();
 
@@ -60,6 +61,8 @@ export class AppController {
     this.controlPanel = byId("controlPanel");
     this.viewerEl = byId("viewer");
     this.paletteEl = byId("palette");
+    this.lblBtn = byId("lblBtn");
+    this.fastestBtn = byId("fastestBtn");
   }
 
   bindEvents() {
@@ -131,6 +134,16 @@ export class AppController {
     this.solveModeBtn.addEventListener("click", () => {
       if (!this.animationBusy) this.setMode("solve");
     });
+
+    this.lblBtn.addEventListener("click", () => {
+      if (this.animationBusy) return;
+      this.setSolverMethod("lbl");
+    });
+
+    this.fastestBtn.addEventListener("click", () => {
+      if (this.animationBusy) return;
+      this.setSolverMethod("fastest");
+    });
   }
 
   buildPalette() {
@@ -175,6 +188,19 @@ export class AppController {
     this.view.resetRootRotation();
     this.view.setAutoRotateEnabled(false);
     this.setStatus("解題模式：請點擊「開始求解」開始分析。");
+  }
+
+  setSolverMethod(method) {
+    this.solverMethod = method;
+    if (method === "lbl") {
+      this.lblBtn.classList.add("active");
+      this.fastestBtn.classList.remove("active");
+    } else {
+      this.fastestBtn.classList.add("active");
+      this.lblBtn.classList.remove("active");
+    }
+    this.clearSolutionView();
+    this.setStatus(`已切換為：${method === "lbl" ? "LBL 分層解法" : "雙向最速解"}`);
   }
 
   bootstrapSolver() {

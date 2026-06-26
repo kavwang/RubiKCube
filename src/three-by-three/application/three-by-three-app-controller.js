@@ -22,6 +22,7 @@ export class ThreeByThreeAppController {
     this.currentStep = 0;
     this.stickerState = new Map();
     this.initialStickerState = null;
+    this.solverMethod = "lbl";
 
     this.bindElements();
     this.view = new ThreeByThreeCubeView({
@@ -57,6 +58,8 @@ export class ThreeByThreeAppController {
     this.editPanel = byId("editPanel");
     this.solvePanel = byId("solvePanel");
     this.paletteEl = byId("palette");
+    this.lblBtn = byId("lblBtn");
+    this.fastestBtn = byId("fastestBtn");
   }
 
   initStickerState() {
@@ -78,6 +81,16 @@ export class ThreeByThreeAppController {
 
     this.solveModeBtn.addEventListener("click", () => {
       if (!this.animationBusy) this.setMode("solve");
+    });
+
+    this.lblBtn.addEventListener("click", () => {
+      if (this.animationBusy) return;
+      this.setSolverMethod("lbl");
+    });
+
+    this.fastestBtn.addEventListener("click", () => {
+      if (this.animationBusy) return;
+      this.setSolverMethod("fastest");
     });
 
     this.randomBtn.addEventListener("click", () => {
@@ -179,6 +192,19 @@ export class ThreeByThreeAppController {
     this.solvePanel.classList.remove("hidden");
     this.editPanel.classList.add("hidden");
     this.setStatus("解題模式：按「開始求解」後逐步播放。");
+  }
+
+  setSolverMethod(method) {
+    this.solverMethod = method;
+    if (method === "lbl") {
+      this.lblBtn.classList.add("active");
+      this.fastestBtn.classList.remove("active");
+    } else {
+      this.fastestBtn.classList.add("active");
+      this.lblBtn.classList.remove("active");
+    }
+    this.clearSolutionView();
+    this.setStatus(`已切換為：${method === "lbl" ? "LBL 分層解法" : "雙向最速解"}`);
   }
 
   resetToSolvedState() {

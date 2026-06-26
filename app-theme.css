@@ -460,6 +460,51 @@ h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Solver Method Toggle */
+.solver-toggle-container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px;
+  margin: 4px 0 12px;
+  gap: 4px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.solver-toggle-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  position: relative;
+}
+
+.solver-toggle-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(56, 189, 248, 0.05) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 15px var(--accent-glow);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.solver-toggle-btn:hover:not(.active) {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.03);
+}
+
 @media (max-width: 768px) {
   .app {
     width: 100vw;
