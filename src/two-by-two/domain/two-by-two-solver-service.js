@@ -156,7 +156,8 @@ function solvePhase2(cpStart, coStart) {
         queue.push({
           cp: nextState.cp,
           co: nextState.co,
-          moves: [...moves, ...trans.moves]
+          moves: [...moves, ...trans.moves],
+          transDepth: transDepth + 1
         });
       }
     }
@@ -208,7 +209,8 @@ function solvePhase3(cpStart, coStart) {
         queue.push({
           cp: nextState.cp,
           co: nextState.co,
-          moves: [...moves, ...trans.moves]
+          moves: [...moves, ...trans.moves],
+          transDepth: transDepth + 1
         });
       }
     }
