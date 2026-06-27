@@ -1,7 +1,7 @@
 import { CORNERS, FACE_ORDER, FACE_STYLE, POS_FACES } from "../config/two-by-two-constants.js";
 import { cubieToStickerState, decodeCubeFromStickers, makeSolvedStickerState } from "../domain/two-by-two-cube-state.js";
 import { applyMoveCOMulti, applyMoveCPMulti, describeMove } from "../domain/two-by-two-moves.js";
-import { SolverService } from "../domain/two-by-two-solver-service.js";
+import { generateRandomSolvableState } from "../domain/two-by-two-solver-service.js";
 import { CubeView } from "../infrastructure/two-by-two-cube-view.js";
 
 function wait(ms) {
@@ -11,7 +11,10 @@ function wait(ms) {
 export class AppController {
   constructor(doc = document) {
     this.doc = doc;
-    this.solver = new SolverService();
+    this.solverReady = false;
+
+    this.solverWorker = new Worker(new URL("./two-by-two-solver.worker.js", import.meta.url), { type: "module" });
+    this.solverWorker.onmessage = this.handleWorkerMessage.bind(this);
 
     this.solutionMoves = [];
     this.solutionPhases = [];
@@ -91,11 +94,11 @@ export class AppController {
 
     this.randomBtn.addEventListener("click", () => {
       if (this.animationBusy) return;
-      if (!this.solver.ready) {
-        this.setStatus("求解器仍在初始化中，請 1-2 秒後再試。");
+      if (!this.solverReady) {
+        this.setStatus("求解器仍在初始化中，請稍後再試。");
         return;
       }
-      const example = this.solver.randomState();
+      const example = generateRandomSolvableState();
       this.stickerState = new Map(example.state);
       this.view.buildCubeFromState(this.stickerState);
       this.clearSolutionView();
@@ -209,19 +212,24 @@ export class AppController {
   }
 
   bootstrapSolver() {
-    setTimeout(() => {
-      try {
-        const debug = new URLSearchParams(window.location.search).has("debug");
-        this.solver.init({ debug });
-        this.setStatus("求解器已準備好。請先輸入顏色，再按「開始求解」。");
-      } catch (err) {
-        this.setStatus(`求解器初始化失敗：${err?.message ?? "未知錯誤"}`);
-      }
-    }, 10);
+    this.setStatus("正在初始化求解器...");
+    const debug = new URLSearchParams(window.location.search).has("debug");
+    this.solverWorker.postMessage({ type: "init", payload: { debug } });
+  }
+
+  handleWorkerMessage(e) {
+    const { type, result } = e.data;
+    if (type === "init_done") {
+      this.solverReady = true;
+      this.setStatus("求解器已準備好。請先輸入顏色，再按「開始求解」。");
+    } else if (type === "solve_done") {
+      this.animationBusy = false;
+      this.handleSolveResult(result);
+    }
   }
 
   solveCurrentState() {
-    if (!this.solver.ready || this.animationBusy) return;
+    if (!this.solverReady || this.animationBusy) return;
 
     const decoded = decodeCubeFromStickers(this.stickerState);
     if (!decoded.ok) {
@@ -229,7 +237,17 @@ export class AppController {
       return;
     }
 
-    const result = this.solver.solve(decoded.cp, decoded.co, this.solverMethod);
+    this._pendingDecoded = decoded; // Store for playback setup
+    this.setStatus("正在計算解法中...");
+    this.animationBusy = true; // prevent user interactions while calculating
+    
+    this.solverWorker.postMessage({
+      type: "solve",
+      payload: { cp: decoded.cp, co: decoded.co, method: this.solverMethod }
+    });
+  }
+
+  handleSolveResult(result) {
     if (!result.ok) {
       this.setStatus(result.message);
       return;
@@ -239,8 +257,8 @@ export class AppController {
     this.solutionPhases = result.phases || [];
     this.currentStep = 0;
     this.initialStickerState = new Map(this.stickerState);
-    this.playbackCP = decoded.cp.slice();
-    this.playbackCO = decoded.co.slice();
+    this.playbackCP = this._pendingDecoded.cp.slice();
+    this.playbackCO = this._pendingDecoded.co.slice();
     this.renderSteps();
     this.updatePlayButtons();
 

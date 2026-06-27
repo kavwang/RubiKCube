@@ -1,6 +1,5 @@
 import { FACE_COLORS, FACE_ORDER } from "../domain/three-by-three-constants.js";
 import { createCubeEngine } from "../domain/three-by-three-cube-engine.js";
-import { solveLblPlan, solveFastestPlan } from "../domain/three-by-three-lbl-solver.js";
 import { ThreeByThreeCubeView } from "../infrastructure/three-by-three-cube-view.js";
 
 function wait(ms) {
@@ -23,6 +22,9 @@ export class ThreeByThreeAppController {
     this.stickerState = new Map();
     this.initialStickerState = null;
     this.solverMethod = "lbl";
+
+    this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js", import.meta.url), { type: "module" });
+    this.solverWorker.onmessage = this.handleSolverResponse.bind(this);
 
     this.bindElements();
     this.view = new ThreeByThreeCubeView({
@@ -258,9 +260,18 @@ export class ThreeByThreeAppController {
       this.initialStickerState = null;
     }
 
-    const plan = this.solverMethod === "lbl"
-      ? solveLblPlan(scrambleState, this.engine)
-      : solveFastestPlan(scrambleState, this.engine);
+    this.setStatus("正在計算解法中...");
+    this.animationBusy = true; // prevent user interactions while calculating
+
+    this.solverWorker.postMessage({
+      scrambleState,
+      method: this.solverMethod
+    });
+  }
+
+  handleSolverResponse(e) {
+    this.animationBusy = false;
+    const plan = e.data;
     if (!plan.ok) {
       this.setStatus(plan.message);
       this.clearSolutionView();

@@ -31,13 +31,13 @@ export class CubeView {
     this.viewerEl.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
+    this.controls.enableDamping = false;
     this.controls.minDistance = 2.8;
     this.controls.maxDistance = 9;
+    this.controls.addEventListener("change", () => this.render());
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
-    this.lightTime = 0;
     this.autoRotateEnabled = false;
     this.isUserInteracting = false;
 
@@ -54,7 +54,7 @@ export class CubeView {
 
     this.setupLights();
     this.bindEvents();
-    this.renderLoop();
+    this.render();
   }
 
   createStickerMaterials() {
@@ -113,6 +113,7 @@ export class CubeView {
         this.camera.aspect = this.viewerEl.clientWidth / this.viewerEl.clientHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.viewerEl.clientWidth, this.viewerEl.clientHeight);
+        this.render();
       }
     });
     resizeObserver.observe(this.viewerEl);
@@ -164,6 +165,7 @@ export class CubeView {
       this.cubies.push({ mesh: group });
       this.cubeRoot.add(group);
     }
+    this.render();
   }
 
   setStickerState(state) {
@@ -171,11 +173,15 @@ export class CubeView {
       const faceLetter = state.get(key) ?? null;
       sticker.material = this.stickerMaterials[faceLetter];
     }
+    this.render();
   }
 
   setSingleSticker(key, faceLetter) {
     const sticker = this.stickerMeshByKey.get(key);
-    if (sticker) sticker.material = this.stickerMaterials[faceLetter ?? null];
+    if (sticker) {
+      sticker.material = this.stickerMaterials[faceLetter ?? null];
+      this.render();
+    }
   }
 
   resetCubieTransforms() {
@@ -184,10 +190,12 @@ export class CubeView {
       c.mesh.rotation.set(0, 0, 0);
       c.mesh.quaternion.set(0, 0, 0, 1);
     }
+    this.render();
   }
 
   resetRootRotation() {
     this.cubeRoot.rotation.set(0, 0, 0);
+    this.render();
   }
 
   setAutoRotateEnabled(enabled) {
@@ -242,6 +250,8 @@ export class CubeView {
         const p = Math.min(1, (now - start) / durationMs);
         const eased = 1 - Math.pow(1 - p, 3);
         pivot.rotation[spec.axis] = targetAngle * eased;
+        this.render();
+
         if (p < 1) {
           requestAnimationFrame(tick);
           return;
@@ -255,6 +265,7 @@ export class CubeView {
           m.position.z = this.snapLayerCoord(m.position.z);
           m.quaternion.normalize();
         }
+        this.render();
         resolve();
       };
       requestAnimationFrame(tick);
@@ -265,20 +276,7 @@ export class CubeView {
     return Math.round(v / LAYER_COORD) * LAYER_COORD;
   }
 
-  renderLoop() {
-    requestAnimationFrame(() => this.renderLoop());
-
-    this.lightTime += 0.015;
-    this.movingLight.position.x = 4.5 * Math.sin(this.lightTime);
-    this.movingLight.position.z = 4.5 * Math.cos(this.lightTime);
-    this.movingLight.position.y = 3.5 + Math.sin(this.lightTime * 0.5) * 1.5;
-
-    if (this.autoRotateEnabled && !this.isUserInteracting) {
-      this.cubeRoot.rotation.y += 0.003;
-      this.cubeRoot.rotation.x += 0.0015;
-    }
-
-    this.controls.update();
+  render() {
     this.renderer.render(this.scene, this.camera);
   }
 }

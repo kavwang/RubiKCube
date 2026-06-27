@@ -6,7 +6,6 @@ export class ThreeByThreeCubeView {
   constructor({ viewerEl, onStickerClick }) {
     this.viewerEl = viewerEl;
     this.onStickerClick = onStickerClick;
-    this.lightTime = 0;
 
     this.scene = new THREE.Scene();
 
@@ -19,9 +18,10 @@ export class ThreeByThreeCubeView {
     viewerEl.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
+    this.controls.enableDamping = false;
     this.controls.minDistance = 5;
     this.controls.maxDistance = 15;
+    this.controls.addEventListener("change", () => this.render());
 
     this.root = new THREE.Group();
     this.scene.add(this.root);
@@ -39,7 +39,8 @@ export class ThreeByThreeCubeView {
     this.setupLights();
     this.buildSolvedCube();
     this.bindEvents();
-    this.animate();
+    
+    this.render();
   }
 
   setupLights() {
@@ -81,6 +82,7 @@ export class ThreeByThreeCubeView {
         this.camera.aspect = this.viewerEl.clientWidth / this.viewerEl.clientHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.viewerEl.clientWidth, this.viewerEl.clientHeight);
+        this.render();
       }
     });
     resizeObserver.observe(this.viewerEl);
@@ -152,6 +154,7 @@ export class ThreeByThreeCubeView {
       const face = stickerState.get(key);
       sticker.material.color.set(face ? FACE_COLORS[face] : "#2f2f2f");
     }
+    this.render();
   }
 
   resetToSolved() {
@@ -164,6 +167,7 @@ export class ThreeByThreeCubeView {
       const face = sticker.userData.face;
       sticker.material.color.set(FACE_COLORS[face]);
     }
+    this.render();
   }
 
   moveSpec(move) {
@@ -214,6 +218,7 @@ export class ThreeByThreeCubeView {
         const p = Math.min(1, (now - start) / durationMs);
         const eased = 1 - Math.pow(1 - p, 3);
         pivot.rotation[spec.axis] = spec.angle * eased;
+        this.render();
 
         if (p < 1) {
           requestAnimationFrame(tick);
@@ -223,6 +228,7 @@ export class ThreeByThreeCubeView {
         layer.forEach((cubie) => this.root.attach(cubie));
         this.root.remove(pivot);
         this.snapCubies(layer);
+        this.render();
         resolve();
       };
       requestAnimationFrame(tick);
@@ -242,13 +248,7 @@ export class ThreeByThreeCubeView {
     return Math.round(v / SPACING) * SPACING;
   }
 
-  animate() {
-    requestAnimationFrame(() => this.animate());
-    this.lightTime += 0.015;
-    this.movingLight.position.x = 4.5 * Math.sin(this.lightTime);
-    this.movingLight.position.z = 4.5 * Math.cos(this.lightTime);
-    this.movingLight.position.y = 3.5 + Math.sin(this.lightTime * 0.5) * 1.5;
-    this.controls.update();
+  render() {
     this.renderer.render(this.scene, this.camera);
   }
 }

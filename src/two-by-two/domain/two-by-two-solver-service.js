@@ -352,7 +352,7 @@ function runSelfChecks(solver) {
 }
 
 // Generate random scramble and state
-function generateRandomSolvableState() {
+export function generateRandomSolvableState() {
   let cp = [0, 1, 2, 3, 4, 5, 6, 7];
   let co = [0, 0, 0, 0, 0, 0, 0, 0];
   const scramble = [];
