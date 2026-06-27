@@ -22,6 +22,7 @@ export class ThreeByThreeAppController {
     this.stickerState = new Map();
     this.initialStickerState = null;
     this.solverMethod = "lbl";
+    this.cubeSource = "manual";
 
     this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js", import.meta.url), { type: "module" });
     this.solverWorker.onmessage = this.handleSolverResponse.bind(this);
@@ -102,21 +103,23 @@ export class ThreeByThreeAppController {
 
     this.applyBtn.addEventListener("click", () => this.applyScrambleFromInput());
 
-    this.fillSolvedBtn.addEventListener("click", () => {
-      if (this.animationBusy) return;
-      this.resetToSolvedState();
-      this.clearSolutionView();
-      this.setStatus("已填入復原顏色。");
-    });
-
     this.clearBtn.addEventListener("click", () => {
       if (this.animationBusy) return;
+      this.cubeSource = "manual";
       for (const key of this.stickerState.keys()) {
         this.stickerState.set(key, null);
       }
       this.view.setStickerState(this.stickerState);
       this.clearSolutionView();
-      this.setStatus("已清空顏色。");
+      this.setStatus("已清空顏色，請點擊色票上色。");
+    });
+
+    this.fillSolvedBtn.addEventListener("click", () => {
+      if (this.animationBusy) return;
+      this.cubeSource = "manual";
+      this.resetToSolvedState();
+      this.clearSolutionView();
+      this.setStatus("已填入復原顏色。");
     });
 
     this.solveBtn.addEventListener("click", () => this.solveCurrentScramble());
@@ -173,6 +176,7 @@ export class ThreeByThreeAppController {
 
   onStickerClick(key) {
     if (this.animationBusy || this.currentMode !== "edit") return;
+    this.cubeSource = "manual";
     this.stickerState.set(key, this.selectedFace);
     this.view.setStickerFace(key, this.selectedFace);
     this.clearSolutionView();
@@ -228,6 +232,7 @@ export class ThreeByThreeAppController {
     }
 
     this.scrambleMoves = parsed.moves;
+    this.cubeSource = "formula";
     this.resetToSolvedState();
     for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
     this.clearSolutionView();
@@ -238,7 +243,7 @@ export class ThreeByThreeAppController {
     if (this.animationBusy) return;
 
     let scrambleState;
-    if (this.currentMode === "edit") {
+    if (this.cubeSource === "manual") {
       const decoded = this.engine.decodeCubeFromStickers(this.stickerState);
       if (!decoded.ok) {
         this.setStatus(decoded.message);
