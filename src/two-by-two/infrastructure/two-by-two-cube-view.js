@@ -222,6 +222,39 @@ export class CubeView {
     }
   }
 
+  applyMoveImmediate(moveId) {
+    const face = MOVE_FACE[Math.floor(moveId / 3)];
+    const turns = moveId % 3 === 0 ? 1 : moveId % 3 === 1 ? 2 : -1;
+    const spec = {
+      U: { axis: "y", layer: LAYER_COORD, angle: -Math.PI / 2 },
+      D: { axis: "y", layer: -LAYER_COORD, angle: Math.PI / 2 },
+      R: { axis: "x", layer: LAYER_COORD, angle: -Math.PI / 2 },
+      L: { axis: "x", layer: -LAYER_COORD, angle: Math.PI / 2 },
+      F: { axis: "z", layer: LAYER_COORD, angle: -Math.PI / 2 },
+      B: { axis: "z", layer: -LAYER_COORD, angle: Math.PI / 2 }
+    }[face];
+
+    const targetAngle = spec.angle * turns;
+    const layer = this.cubies
+      .map((c) => c.mesh)
+      .filter((m) => Math.abs(m.position[spec.axis] - spec.layer) < 0.1);
+
+    const pivot = new THREE.Group();
+    this.cubeRoot.add(pivot);
+    layer.forEach((m) => pivot.attach(m));
+    pivot.rotation[spec.axis] = targetAngle;
+    
+    layer.forEach((m) => this.cubeRoot.attach(m));
+    this.cubeRoot.remove(pivot);
+    for (const m of layer) {
+      m.position.x = this.snapLayerCoord(m.position.x);
+      m.position.y = this.snapLayerCoord(m.position.y);
+      m.position.z = this.snapLayerCoord(m.position.z);
+      m.quaternion.normalize();
+    }
+    this.render();
+  }
+
   async animateMove(moveId, durationMs) {
     const face = MOVE_FACE[Math.floor(moveId / 3)];
     const turns = moveId % 3 === 0 ? 1 : moveId % 3 === 1 ? 2 : -1;

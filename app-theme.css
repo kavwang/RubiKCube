@@ -406,6 +406,7 @@ h1 {
   color: var(--muted);
   line-height: 1.4;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 #stepsList li::before {

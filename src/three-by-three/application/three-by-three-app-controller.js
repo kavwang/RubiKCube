@@ -48,6 +48,7 @@ export class ThreeByThreeAppController {
     this.clearBtn = byId("clearBtn");
     this.solveBtn = byId("solveBtn");
     this.resetBtn = byId("resetBtn");
+    this.prevBtn = byId("prevBtn");
     this.nextBtn = byId("nextBtn");
     this.autoBtn = byId("autoBtn");
     this.statusEl = byId("status");
@@ -139,6 +140,7 @@ export class ThreeByThreeAppController {
       this.setStatus("已回到打亂狀態。");
     });
 
+    this.prevBtn.addEventListener("click", () => this.playPrevStep());
     this.nextBtn.addEventListener("click", () => this.playOneStep());
 
     this.autoBtn.addEventListener("click", async () => {
@@ -283,8 +285,35 @@ export class ThreeByThreeAppController {
       return;
     }
 
-    this.solutionMoves = plan.moves;
-    this.solutionPhases = plan.phases;
+    this.solutionMoves = [];
+    this.solutionPhases = [];
+    
+    let oldIdx = 0;
+    let newIdx = 0;
+    let currentPhase = 0;
+    const planPhases = plan.phases || [];
+
+    for (const move of plan.moves) {
+      if (currentPhase < planPhases.length && planPhases[currentPhase].startIdx === oldIdx) {
+        this.solutionPhases.push({ name: planPhases[currentPhase].name, startIdx: newIdx });
+        currentPhase++;
+      }
+      
+      if (move.endsWith("2")) {
+        const halfMove = move[0];
+        this.solutionMoves.push(halfMove, halfMove);
+        newIdx += 2;
+      } else {
+        this.solutionMoves.push(move);
+        newIdx += 1;
+      }
+      oldIdx++;
+    }
+    
+    if (currentPhase < planPhases.length && planPhases[currentPhase].startIdx === oldIdx) {
+      this.solutionPhases.push({ name: planPhases[currentPhase].name, startIdx: newIdx });
+    }
+
     this.currentStep = 0;
     this.renderSteps();
     this.updateButtons();
@@ -327,6 +356,7 @@ export class ThreeByThreeAppController {
         li.classList.add("active");
         setTimeout(() => li.scrollIntoView({ block: "nearest", behavior: "smooth" }), 10);
       }
+      li.addEventListener("click", () => this.jumpToStep(i));
       this.stepsListEl.appendChild(li);
     }
 
@@ -336,8 +366,65 @@ export class ThreeByThreeAppController {
   updateButtons() {
     const hasSolution = this.solutionMoves.length > 0;
     this.nextBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length || this.animationBusy;
+    this.prevBtn.disabled = !hasSolution || this.currentStep <= 0 || this.animationBusy;
     this.autoBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length;
     this.resetBtn.disabled = (!this.scrambleMoves.length && !this.initialStickerState) || this.animationBusy;
+  }
+
+  async playPrevStep() {
+    if (this.animationBusy || this.currentStep <= 0) return;
+    this.stopAuto();
+    this.animationBusy = true;
+    this.updateButtons();
+
+    this.currentStep -= 1;
+    const move = this.solutionMoves[this.currentStep];
+    const inverseMove = move.endsWith("'") ? move[0] : move + "'";
+    
+    await this.view.animateMove(inverseMove, 270);
+    this.renderSteps();
+
+    if (this.currentStep === 0) {
+      this.setStatus("已回到起點。");
+    } else {
+      this.setStatus(`退回至第 ${this.currentStep} / ${this.solutionMoves.length} 步。`);
+    }
+
+    this.animationBusy = false;
+    this.updateButtons();
+  }
+
+  async jumpToStep(targetStep) {
+    if (this.animationBusy || targetStep === this.currentStep) return;
+    this.stopAuto();
+    this.animationBusy = true;
+    this.updateButtons();
+
+    this.resetToSolvedState();
+    if (this.initialStickerState) {
+      this.view.setStickerState(this.initialStickerState);
+      this.stickerState = new Map(this.initialStickerState);
+    } else {
+      for (const move of this.scrambleMoves) this.view.applyMoveImmediate(move);
+    }
+
+    for (let i = 0; i < targetStep; i++) {
+      this.view.applyMoveImmediate(this.solutionMoves[i]);
+    }
+
+    this.currentStep = targetStep;
+    this.renderSteps();
+
+    if (this.currentStep === 0) {
+      this.setStatus("已回到起點。");
+    } else if (this.currentStep >= this.solutionMoves.length) {
+      this.setStatus("完成，3x3 已復原。");
+    } else {
+      this.setStatus(`跳轉至第 ${this.currentStep} / ${this.solutionMoves.length} 步。`);
+    }
+
+    this.animationBusy = false;
+    this.updateButtons();
   }
 
   async playOneStep() {

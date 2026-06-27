@@ -51,6 +51,7 @@ export class AppController {
     this.stepCounterEl = byId("stepCounter");
     this.solveBtn = byId("solveBtn");
     this.nextBtn = byId("nextBtn");
+    this.prevBtn = byId("prevBtn");
     this.autoBtn = byId("autoBtn");
     this.resetPlayBtn = byId("resetPlayBtn");
     this.fillSolvedBtn = byId("fillSolvedBtn");
@@ -106,6 +107,7 @@ export class AppController {
     });
 
     this.solveBtn.addEventListener("click", () => this.solveCurrentState());
+    this.prevBtn.addEventListener("click", () => this.playPrevStep());
     this.nextBtn.addEventListener("click", () => this.playOneStep());
     this.autoBtn.addEventListener("click", () => this.toggleAutoPlay());
 
@@ -253,8 +255,35 @@ export class AppController {
       return;
     }
 
-    this.solutionMoves = result.moves;
-    this.solutionPhases = result.phases || [];
+    this.solutionMoves = [];
+    this.solutionPhases = [];
+    let oldIdx = 0;
+    let newIdx = 0;
+    let currentPhase = 0;
+    const resultPhases = result.phases || [];
+    
+    for (const moveId of result.moves) {
+      if (currentPhase < resultPhases.length && resultPhases[currentPhase].startIdx === oldIdx) {
+        this.solutionPhases.push({ name: resultPhases[currentPhase].name, startIdx: newIdx });
+        currentPhase++;
+      }
+      if (moveId % 3 === 1) {
+        const half = moveId - 1;
+        this.solutionMoves.push(half, half);
+        newIdx += 2;
+      } else {
+        this.solutionMoves.push(moveId);
+        newIdx += 1;
+      }
+      oldIdx++;
+    }
+    if (currentPhase < resultPhases.length && resultPhases[currentPhase].startIdx === oldIdx) {
+      this.solutionPhases.push({ name: resultPhases[currentPhase].name, startIdx: newIdx });
+    }
+    for (let i = 0; i < this.solutionPhases.length; i++) {
+      this.solutionPhases[i].endIdx = (i < this.solutionPhases.length - 1) ? this.solutionPhases[i + 1].startIdx : newIdx;
+    }
+
     this.currentStep = 0;
     this.initialStickerState = new Map(this.stickerState);
     this.playbackCP = this._pendingDecoded.cp.slice();
@@ -285,6 +314,7 @@ export class AppController {
   updatePlayButtons() {
     const hasSolution = this.solutionMoves.length > 0;
     this.nextBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length || this.animationBusy;
+    this.prevBtn.disabled = !hasSolution || this.currentStep <= 0 || this.animationBusy;
     this.autoBtn.disabled = !hasSolution || this.currentStep >= this.solutionMoves.length;
     this.resetPlayBtn.disabled = !this.initialStickerState || this.animationBusy;
   }
@@ -316,6 +346,7 @@ export class AppController {
             li.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }, 10);
         }
+        li.addEventListener("click", () => this.jumpToStep(i));
         this.stepsListEl.appendChild(li);
       });
     } else {
@@ -328,10 +359,60 @@ export class AppController {
             li.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }, 10);
         }
+        li.addEventListener("click", () => this.jumpToStep(i));
         this.stepsListEl.appendChild(li);
       });
     }
     this.stepCounterEl.textContent = `${this.currentStep} / ${this.solutionMoves.length}`;
+  }
+
+  async playPrevStep() {
+    if (this.animationBusy || this.currentStep <= 0) return;
+    this.stopAuto();
+    this.animationBusy = true;
+    this.updatePlayButtons();
+
+    this.currentStep -= 1;
+    const moveId = this.solutionMoves[this.currentStep];
+    const inverseMoveId = moveId % 3 === 0 ? moveId + 2 : (moveId % 3 === 2 ? moveId - 2 : moveId);
+    
+    await this.view.animateMove(inverseMoveId, 270);
+    this.renderSteps();
+
+    if (this.currentStep === 0) {
+      this.setStatus("已回到起點。");
+    } else {
+      this.setStatus(`退回至第 ${this.currentStep} / ${this.solutionMoves.length} 步。`);
+    }
+
+    this.animationBusy = false;
+    this.updatePlayButtons();
+  }
+
+  async jumpToStep(targetStep) {
+    if (this.animationBusy || targetStep === this.currentStep) return;
+    this.stopAuto();
+    this.animationBusy = true;
+    this.updatePlayButtons();
+
+    this.view.buildCubeFromState(this.initialStickerState);
+    for (let i = 0; i < targetStep; i++) {
+      this.view.applyMoveImmediate(this.solutionMoves[i]);
+    }
+
+    this.currentStep = targetStep;
+    this.renderSteps();
+
+    if (this.currentStep === 0) {
+      this.setStatus("已回到起點。");
+    } else if (this.currentStep >= this.solutionMoves.length) {
+      this.setStatus("完成，2x2 已復原。");
+    } else {
+      this.setStatus(`跳轉至第 ${this.currentStep} / ${this.solutionMoves.length} 步。`);
+    }
+
+    this.animationBusy = false;
+    this.updatePlayButtons();
   }
 
   async playOneStep() {
