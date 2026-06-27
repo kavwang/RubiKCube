@@ -147,6 +147,7 @@ export class ThreeByThreeCubeView {
     const sticker = this.stickerByKey.get(key);
     if (!sticker) return;
     sticker.material.color.set(face ? FACE_COLORS[face] : "#2f2f2f");
+    this.render();
   }
 
   setStickerState(stickerState) {
@@ -203,6 +204,7 @@ export class ThreeByThreeCubeView {
     layer.forEach((cubie) => this.root.attach(cubie));
     this.root.remove(pivot);
     this.snapCubies(layer);
+    this.render();
   }
 
   async animateMove(move, durationMs) {
