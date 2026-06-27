@@ -3,9 +3,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { FACE_COLORS, LAYER, SPACING } from "../domain/three-by-three-constants.js";
 
 export class ThreeByThreeCubeView {
-  constructor({ viewerEl, onStickerClick }) {
+  constructor({ viewerEl, onStickerClick, fpsCounterEl }) {
     this.viewerEl = viewerEl;
     this.onStickerClick = onStickerClick;
+    this.fpsCounterEl = fpsCounterEl;
+
+    // FPS tracking
+    this._fpsFrameTimes = [];
+    this._fpsLastUpdate = 0;
 
     this.scene = new THREE.Scene();
 
@@ -252,6 +257,22 @@ export class ThreeByThreeCubeView {
 
   render() {
     this.renderer.render(this.scene, this.camera);
+    this._updateFps();
+  }
+
+  _updateFps() {
+    if (!this.fpsCounterEl) return;
+    const now = performance.now();
+    this._fpsFrameTimes.push(now);
+    // Keep only the last 30 frames
+    if (this._fpsFrameTimes.length > 30) this._fpsFrameTimes.shift();
+    // Update display at most 4 times per second
+    if (now - this._fpsLastUpdate < 250) return;
+    this._fpsLastUpdate = now;
+    if (this._fpsFrameTimes.length < 2) return;
+    const span = now - this._fpsFrameTimes[0];
+    const fps = Math.round(((this._fpsFrameTimes.length - 1) / span) * 1000);
+    this.fpsCounterEl.textContent = `${fps} FPS`;
   }
 }
 

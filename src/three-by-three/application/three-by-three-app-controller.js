@@ -30,7 +30,8 @@ export class ThreeByThreeAppController {
     this.bindElements();
     this.view = new ThreeByThreeCubeView({
       viewerEl: this.viewerEl,
-      onStickerClick: (key) => this.onStickerClick(key)
+      onStickerClick: (key) => this.onStickerClick(key),
+      fpsCounterEl: this.fpsCounterEl
     });
 
     this.initStickerState();
@@ -64,6 +65,7 @@ export class ThreeByThreeAppController {
     this.paletteEl = byId("palette");
     this.lblBtn = byId("lblBtn");
     this.fastestBtn = byId("fastestBtn");
+    this.fpsCounterEl = byId("fpsCounter");
   }
 
   initStickerState() {

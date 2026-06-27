@@ -35,7 +35,8 @@ export class AppController {
       viewerEl: this.viewerEl,
       corners: CORNERS,
       posFaces: POS_FACES,
-      onStickerClick: (key) => this.onStickerClick(key)
+      onStickerClick: (key) => this.onStickerClick(key),
+      fpsCounterEl: this.fpsCounterEl
     });
 
     this.buildPalette();
@@ -67,6 +68,7 @@ export class AppController {
     this.paletteEl = byId("palette");
     this.lblBtn = byId("lblBtn");
     this.fastestBtn = byId("fastestBtn");
+    this.fpsCounterEl = byId("fpsCounter");
   }
 
   bindEvents() {

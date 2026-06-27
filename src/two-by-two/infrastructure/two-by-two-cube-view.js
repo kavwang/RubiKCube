@@ -14,11 +14,16 @@ const CUBE_COORDS = {
 };
 
 export class CubeView {
-  constructor({ viewerEl, corners, posFaces, onStickerClick }) {
+  constructor({ viewerEl, corners, posFaces, onStickerClick, fpsCounterEl }) {
     this.viewerEl = viewerEl;
     this.corners = corners;
     this.posFaces = posFaces;
     this.onStickerClick = onStickerClick;
+    this.fpsCounterEl = fpsCounterEl;
+
+    // FPS tracking
+    this._fpsFrameTimes = [];
+    this._fpsLastUpdate = 0;
 
     this.scene = new THREE.Scene();
 
@@ -311,5 +316,21 @@ export class CubeView {
 
   render() {
     this.renderer.render(this.scene, this.camera);
+    this._updateFps();
+  }
+
+  _updateFps() {
+    if (!this.fpsCounterEl) return;
+    const now = performance.now();
+    this._fpsFrameTimes.push(now);
+    // Keep only the last 30 frames
+    if (this._fpsFrameTimes.length > 30) this._fpsFrameTimes.shift();
+    // Update display at most 4 times per second
+    if (now - this._fpsLastUpdate < 250) return;
+    this._fpsLastUpdate = now;
+    if (this._fpsFrameTimes.length < 2) return;
+    const span = now - this._fpsFrameTimes[0];
+    const fps = Math.round(((this._fpsFrameTimes.length - 1) / span) * 1000);
+    this.fpsCounterEl.textContent = `${fps} FPS`;
   }
 }
