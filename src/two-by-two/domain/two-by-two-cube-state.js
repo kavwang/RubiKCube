@@ -78,7 +78,24 @@ export function decodeCubeFromStickers(stickerState) {
   }
 
   const twistSum = co.reduce((a, b) => a + b, 0) % 3;
-  if (twistSum !== 0) return { ok: false, message: "角塊方向總和不合法，請重新檢查顏色輸入。" };
+  if (twistSum !== 0) {
+    // 找出主面顏色（U 或 D）不在頂/底面的角塊（co !== 0），這些最可能是被手動扭轉的
+    const twistedCorners = [];
+    for (let pos = 0; pos < 8; pos++) {
+      if (co[pos] !== 0) {
+        twistedCorners.push(CORNERS[pos]);
+      }
+    }
+    const direction = twistSum === 1 ? "順時針扭轉一格" : "逆時針扭轉一格";
+    const hint = twistedCorners.length > 0
+      ? `請重點檢查這些角塊（主面顏色不在頂/底面）：${twistedCorners.join("、")}`
+      : "請重新檢查顏色輸入。";
+    return {
+      ok: false,
+      message: `角塊方向總和不合法（總和 mod 3 = ${twistSum}，相當於某個角塊被${direction}）。${hint}`,
+      twistedCorners
+    };
+  }
 
   return { ok: true, cp, co };
 }

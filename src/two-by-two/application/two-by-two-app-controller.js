@@ -172,6 +172,7 @@ export class AppController {
     if (this.animationBusy || this.currentMode !== "edit") return;
     this.stickerState.set(key, this.selectedFace);
     this.view.setSingleSticker(key, this.selectedFace);
+    this.view.clearHighlights();
     this.clearSolutionView();
   }
 
@@ -238,9 +239,13 @@ export class AppController {
     const decoded = decodeCubeFromStickers(this.stickerState);
     if (!decoded.ok) {
       this.setStatus(decoded.message);
+      if (decoded.twistedCorners && decoded.twistedCorners.length > 0) {
+        this.view.highlightCorners(decoded.twistedCorners);
+      }
       return;
     }
 
+    this.view.clearHighlights();
     this._pendingDecoded = decoded; // Store for playback setup
     this.setStatus("正在計算解法中...");
     this.animationBusy = true; // prevent user interactions while calculating
@@ -302,6 +307,7 @@ export class AppController {
 
   clearSolutionView() {
     this.stopAuto();
+    this.view?.clearHighlights();
     this.solutionMoves = [];
     this.solutionPhases = [];
     this.currentStep = 0;

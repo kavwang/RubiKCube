@@ -52,8 +52,12 @@ export class CubeView {
     this.stickerMeshes = [];
     this.stickerMeshByKey = new Map();
 
+    // Highlight state
+    this._highlightedCorners = null;
+    this._highlightAnimId = null;
+    this._highlightStartTime = 0;
+
     this.cubieBox = new THREE.BoxGeometry(0.98, 0.98, 0.98);
-    this.bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.0 });
     this.stickerGeo = new THREE.PlaneGeometry(0.8, 0.8);
     this.stickerMaterials = this.createStickerMaterials();
 
@@ -126,11 +130,13 @@ export class CubeView {
 
   buildCubeFromState(stickerState) {
     if (this.cubies.length === 8) {
+      this.clearHighlights();
       this.setStickerState(stickerState);
       this.resetCubieTransforms();
       return;
     }
 
+    this.clearHighlights();
     this.cubies.forEach((c) => this.cubeRoot.remove(c.mesh));
     this.cubies = [];
     this.stickerMeshes = [];
@@ -146,7 +152,10 @@ export class CubeView {
       group.position.set(x, y, z);
       group.userData.defaultPosition = new THREE.Vector3(x, y, z);
 
-      group.add(new THREE.Mesh(this.cubieBox, this.bodyMat));
+      // Each cubie gets its own body material so it can be highlighted independently
+      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.0 });
+      const bodyMesh = new THREE.Mesh(this.cubieBox, bodyMat);
+      group.add(bodyMesh);
 
       const faces = [];
       if (ry === 1) faces.push("U");
@@ -167,10 +176,57 @@ export class CubeView {
         this.stickerMeshByKey.set(key, sticker);
       }
 
-      this.cubies.push({ mesh: group });
+      this.cubies.push({ mesh: group, bodyMesh, bodyMat, corner });
       this.cubeRoot.add(group);
     }
     this.render();
+  }
+
+  // Highlight the specified corners with a pulsing orange glow
+  highlightCorners(cornerNames) {
+    this._stopHighlightAnimation();
+    this._highlightedCorners = new Set(cornerNames);
+    this._highlightStartTime = performance.now();
+    this._startHighlightAnimation();
+  }
+
+  clearHighlights() {
+    this._stopHighlightAnimation();
+    this._highlightedCorners = null;
+    for (const cubie of this.cubies) {
+      if (!cubie.bodyMat) continue;
+      cubie.bodyMat.color.set(0x111111);
+      cubie.bodyMat.emissive.set(0x000000);
+      cubie.bodyMat.emissiveIntensity = 0;
+    }
+    this.render();
+  }
+
+  _startHighlightAnimation() {
+    const animate = () => {
+      if (!this._highlightedCorners) return;
+      const elapsed = (performance.now() - this._highlightStartTime) / 1000;
+      // Pulse between dim and bright orange ~1.5 times per second
+      const pulse = 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(elapsed * Math.PI * 3));
+      for (const cubie of this.cubies) {
+        if (!cubie.bodyMat) continue;
+        if (this._highlightedCorners.has(cubie.corner)) {
+          cubie.bodyMat.color.set(0xff6600);
+          cubie.bodyMat.emissive.set(0xff3300);
+          cubie.bodyMat.emissiveIntensity = pulse;
+        }
+      }
+      this.render();
+      this._highlightAnimId = requestAnimationFrame(animate);
+    };
+    this._highlightAnimId = requestAnimationFrame(animate);
+  }
+
+  _stopHighlightAnimation() {
+    if (this._highlightAnimId !== null) {
+      cancelAnimationFrame(this._highlightAnimId);
+      this._highlightAnimId = null;
+    }
   }
 
   setStickerState(state) {
