@@ -24,7 +24,7 @@ export class ThreeByThreeAppController {
     this.solverMethod = "lbl";
     this.cubeSource = "manual";
 
-    this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js", import.meta.url), { type: "module" });
+    this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js?v=" + Date.now(), import.meta.url), { type: "module" });
     this.solverWorker.onmessage = this.handleSolverResponse.bind(this);
 
     this.bindElements();
