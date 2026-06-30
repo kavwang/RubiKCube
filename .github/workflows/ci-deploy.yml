@@ -3,8 +3,24 @@ name: CI & Deploy
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - 'package.json'
+      - 'package-lock.json'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - 'package.json'
+      - 'package-lock.json'
 
 permissions:
   contents: read
