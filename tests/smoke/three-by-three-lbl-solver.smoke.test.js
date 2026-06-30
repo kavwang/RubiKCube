@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createCubeEngine } from "../../src/three-by-three/domain/three-by-three-cube-engine.js";
-import { solveLblPlan, solveFastestPlan } from "../../src/three-by-three/domain/three-by-three-lbl-solver.js";
+import { solveLblPlan } from "../../src/three-by-three/domain/three-by-three-lbl-solver.js";
+import { solveFastestPlan } from "../../src/three-by-three/domain/three-by-three-fastest-solver.js";
 
 test("LBL smoke: random scrambles should be solvable", () => {
   const engine = createCubeEngine();

@@ -1,5 +1,6 @@
 import { createCubeEngine } from "../domain/three-by-three-cube-engine.js";
-import { solveLblPlan, solveFastestPlan } from "../domain/three-by-three-lbl-solver.js";
+import { solveLblPlan } from "../domain/three-by-three-lbl-solver.js";
+import { solveFastestPlan } from "../domain/three-by-three-fastest-solver.js";
 
 const engine = createCubeEngine();
 
