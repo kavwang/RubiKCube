@@ -5,13 +5,13 @@
 
 一款純前端的魔術方塊教學解題工具，在瀏覽器中即可使用，主要功能：
 
-- 2x2 與 3x3 **LBL（Layer-by-Layer）分層教學解法**，附逐步動畫播放
-- 2x2 **雙向搜尋最速解**（Bidirectional BFS，God's Number ≤ 11 步），附逐步動畫播放
-- 3x3 **Kociemba Two-Phase 最速解**（透過 cubejs 函式庫，平均約 21 步），附逐步動畫播放
+- 2x2 與 3x3 **LBL（Layer-by-Layer）層先法教學**，附逐步動畫播放
+- 2x2 **雙向搜尋最速解**（雙向 BFS 最佳解，God's Number ≤ 11 步），附逐步動畫播放
+- 3x3 **Kociemba Two-Phase 速解**（自研純 JS 演算法，平均約 21 步），附逐步動畫播放
 - 3D 互動視角（可拖曳旋轉，編輯與解題時會自動鎖定鏡頭避免誤觸）
-- 色票點選上色、打亂公式輸入、隨機打亂
-
-專案的核心理念是讓使用者不只「拿到答案」，更能「跟著步驟學會怎麼還原」；同時也可切換到最速解模式，看看更有效率的復原路徑。
+- 色票點選填色、打亂公式輸入、隨機打亂
+ 
+專案的核心理念是讓使用者不只「拿到答案」，更能「跟著步驟學會怎麼還原」；同時也可切換到速解模式，看看更有效率的還原步驟。
 
 ---
 
@@ -20,7 +20,7 @@
 | 技術 | 用途 |
 |---|---|
 | [Three.js](https://threejs.org/) v0.165.0 | 3D 魔術方塊的繪製與轉動動畫（透過 CDN Import Map 載入） |
-| [cubejs](https://github.com/nicbarker/cubejs) v1.3.2 | 3x3 Kociemba Two-Phase 最速解演算法（ESM 打包版） |
+| 自研 Kociemba 求解器 | 3x3 Kociemba Two-Phase 最速解演算法（純 JavaScript 從零實作） |
 | ES Modules | 瀏覽器原生模組系統，不需要額外的打包工具 |
 | Web Workers | 把求解運算丟到背景執行緒，避免卡住畫面 |
 | GitHub Actions | CI 自動跑測試 ＋ GitHub Pages 自動部署 |
@@ -36,24 +36,24 @@
 - 首頁提供自動旋轉的 3D 方塊預覽
 
 ### 2x2 模式
-- 支援手動點色票上色
+- 支援手動點色票填色
 - 支援隨機產生可解的打亂狀態
 - 支援逐步教學播放與自動播放
-- 支援 **LBL 分層解法** 與 **雙向搜尋最速解**（能在極短時間內找出 God's Number，最多 11 步的最短還原路徑）
+- 支援 **LBL 層先法** 與 **雙向搜尋最佳解**（能在極短時間內找出 God's Number，最多 11 步的最短還原路徑）
 - **非法角塊偵測與視覺提示**：若輸入的顏色導致角塊方向總和不合法（代表某顆角塊被手動扭轉過），系統會自動列出可疑角塊，並在 3D 畫面上以橘色脈衝閃爍標示位置，幫助使用者快速找到輸入錯誤
-
+ 
 ### 3x3 模式
 - 介面風格與 2x2 一致
 - 支援打亂公式輸入與套用
-- 支援 **LBL 分層解法**：
-  1. 第一層十字
-  2. 第一層角塊
-  3. 第二層邊塊
-  4. 第三層定向／排列（依階段分段顯示）
-- 支援 **Kociemba Two-Phase 最速解**：
-  - 採用 Kociemba 兩階段演算法（透過 cubejs 函式庫），直接搜尋接近最佳解
+- 支援 **LBL 層先法**：
+  1. 底層十字 (Cross)
+  2. 底層角塊還原 (F2L 前置步驟)
+  3. 中層邊塊還原
+  4. 頂層朝向 (OLL) 與排列 (PLL) 還原（依步驟分段顯示）
+- 支援 **Kociemba Two-Phase 速解**：
+  - 採用自研 Kociemba 兩階段演算法，直接搜尋接近最佳解
   - 平均約 21 步即可還原任意打亂狀態
-  - 步數遠少於 LBL 分層解法
+  - 步數遠少於 LBL 層先法
 - 可逐步播放、單步前進／後退、跳回打亂起點
 
 ---
@@ -105,9 +105,15 @@ RubiKCube/
 │     ├─ domain/
 │     │  ├─ three-by-three-constants.js    # 常數、目標索引、公式巨集
 │     │  ├─ three-by-three-cube-engine.js  # 狀態轉換、轉法與解析
-│     │  ├─ three-by-three-lbl-solver.js   # LBL 分層解法
-│     │  ├─ three-by-three-fastest-solver.js # Kociemba 最速解（封裝 cubejs）
-│     │  └─ cubejs.js                      # cubejs v1.3.2 ESM 打包版
+│     │  ├─ three-by-three-lbl-solver.js   # LBL 層先法
+│     │  ├─ three-by-three-fastest-solver.js # Kociemba 速解（調用自研 solver）
+│     │  └─ two-phase/                  # 自研 Kociemba 求解器模組
+│     │     ├─ cubie-cube.js            #   塊級表示法與移動
+│     │     ├─ coordinates.js           #   座標編碼與解碼
+│     │     ├─ move-tables.js           #   預計算移動表
+│     │     ├─ pruning-tables.js        #   BFS 剪枝啟發表
+│     │     ├─ solver.js                #   IDA* 搜尋主體
+│     │     └─ facelet-parser.js        #   54-facelet 貼紙解析
 │     └─ infrastructure/
 │        └─ three-by-three-cube-view.js    # Three.js 3D 繪製與動畫
 │
@@ -193,13 +199,15 @@ npm run test:smoke    # 只跑冒煙測試
 ### 測試涵蓋範圍
 
 #### 單元測試（Unit Test）
-檔案：`tests/unit/three-by-three-cube-engine.test.js`
+檔案：`tests/unit/three-by-three-cube-engine.test.js`, `tests/unit/two-phase-*.test.js`
 
 - 轉法符號解析是否正確
 - 不合法符號是否有被攔下來
 - 正轉與逆轉是否能互相抵消
 - 打亂 → 反打亂是否會回到還原狀態
 - 隨機打亂是否有避免連續同面
+- **Two-Phase 塊級魔方特性測試**（旋轉運算、CCW 相消）
+- **Two-Phase 六大座標系統測試**（Twist、Flip、UDSlice、CornerPerm、EdgePerm、UDSlicePerm 的 get/set 一致性）
 
 #### 冒煙測試（Smoke Test）
 ##### 3x3 測試
@@ -252,7 +260,7 @@ npm run test:smoke    # 只跑冒煙測試
 ## 已知限制
 
 - 目前是純前端單機版，沒有後端儲存功能
-- LBL 模式主打教學可讀性（步數較多）；想看高效率還原的話，可以切換到最速解模式
+- LBL 模式主打教學可讀性（步數較多）；想看高效率還原的話，可以切換到速解模式
 
 ---
 
