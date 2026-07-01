@@ -1,0 +1,198 @@
+/* Apple Style Component Styling */
+
+/* Buttons */
+.btn-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+.dark .btn-apple {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-apple:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.dark .btn-apple:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.btn-apple:active {
+  transform: scale(0.97);
+}
+
+.btn-apple-primary {
+  background-color: #007aff;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+}
+
+.btn-apple-primary:hover {
+  background-color: #0062cc;
+}
+
+.btn-apple-danger {
+  background-color: rgba(255, 59, 48, 0.15);
+  color: #ff3b30;
+}
+
+.btn-apple-danger:hover {
+  background-color: rgba(255, 59, 48, 0.25);
+}
+
+.btn-apple:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Glassmorphism Cards */
+.card-apple {
+  background-color: var(--surface-card);
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: 1px solid var(--border-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-apple);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Control Panel */
+.panel-apple {
+  background-color: var(--surface-panel);
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-apple);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Input / Textarea */
+.input-apple {
+  background-color: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dark .input-apple {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.input-apple:focus {
+  border-color: #007aff;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.dark .input-apple:focus {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* iOS Segmented Control (Tabs) */
+.segmented-control {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 9px;
+  padding: 2px;
+  user-select: none;
+}
+
+.dark .segmented-control {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.segmented-btn {
+  flex: 1;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+}
+
+.segmented-btn.active {
+  background-color: #ffffff;
+  color: #1d1d1f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.dark .segmented-btn.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* iOS Switch (Toggle) */
+.switch-apple {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+}
+
+.switch-apple input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-apple {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.08);
+  transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  border-radius: 34px;
+}
+
+.dark .slider-apple {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.slider-apple:before {
+  position: absolute;
+  content: "";
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.05);
+}
+
+input:checked + .slider-apple {
+  background-color: #34c759; /* iOS green */
+}
+
+input:checked + .slider-apple:before {
+  transform: translateX(20px);
+}

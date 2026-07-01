@@ -1,0 +1,119 @@
+{
+  "home": {
+    "title": "魔術方塊解題器",
+    "subtitle": "選擇你要解的尺寸，進入對應的 3D 教學解題頁。",
+    "card2x2": {
+      "title": "2x2 解題",
+      "desc": "支援貼紙上色輸入、可解狀態檢查、逐步播放最佳解。",
+      "enter": "進入 2x2"
+    },
+    "card3x3": {
+      "title": "3x3 解題",
+      "desc": "輸入打亂公式，產生反解步驟，包含 LBL 教學與 Kociemba 最速解。",
+      "enter": "進入 3x3"
+    }
+  },
+  "common": {
+    "backHome": "回首頁",
+    "collapsePanel": "收合選單",
+    "expandPanel": "展開選單",
+    "editMode": "編輯顏色",
+    "solveMode": "開始解題",
+    "randomScramble": "隨機打亂",
+    "fillSolved": "填入已復原",
+    "clearColors": "清空顏色",
+    "solve": "開始求解",
+    "autoPlay": "自動播放",
+    "stopPlay": "停止播放",
+    "prevStep": "上一步",
+    "nextStep": "下一步",
+    "resetPlay": "回到起點",
+    "stepsTitle": "解題步驟",
+    "stepCounter": "步驟",
+    "formulaLabel": "打亂公式",
+    "formulaPlaceholder": "例：R U R' U' F2",
+    "applyFormula": "套用打亂",
+    "themeToggle": "切換主題",
+    "langToggle": "Language"
+  },
+  "solver": {
+    "lbl": "LBL 分層解法",
+    "fastest2x2": "雙向最速解",
+    "fastest3x3": "Kociemba 最速解"
+  },
+  "status": {
+    "initializing": "初始化求解器中...",
+    "initializingDone": "求解器已準備好。請先輸入顏色，再按「開始求解」。",
+    "pleaseScramble": "請先輸入或產生打亂公式。",
+    "solveReady": "解題模式：請點擊「開始求解」開始分析。",
+    "editReady": "編輯模式：請選取色票並點擊方塊貼紙上色。",
+    "solving": "正在計算解法中...",
+    "solvedAlready": "目前已是復原狀態，不需要轉動。",
+    "solverError": "求解器尚未初始化。",
+    "solveDone": "找到解法，共 {{n}} 步。按「下一步」開始。",
+    "solveDoneOptimal": "已產生 雙向最速解解法，共 {{n}} 步。",
+    "solveDoneKociemba": "已產生 Kociemba 速解解法，共 {{n}} 步。",
+    "solveDoneLBL": "已產生 LBL 教學解法，共 {{n}} 步。",
+    "stepDescription": "第 {{current}} / {{total}} 步完成，請繼續。",
+    "backToStart": "已回到起點。",
+    "backStep": "退回至第 {{current}} / {{total}} 步。",
+    "forwardStep": "跳轉至第 {{current}} / {{total}} 步。",
+    "solvedComplete": "完成。魔方已復原。",
+    "manualSolveInfo": "已填入復原狀態。請改成你手上的顏色後再求解。",
+    "clearedInfo": "已清空。請選色後點擊貼紙上色。",
+    "notScrambled": "目前缺少播放狀態，請重新按「開始求解」。",
+    "solverErrorGeneric": "解題發生錯誤：{{msg}}",
+    "scrambleApplied": "已套用打亂，共 {{n}} 步。",
+    "invalidScramble": "不支援的步驟記號：{{token}}（僅支援 U R F D L B + 2 或 '）",
+    "stickersEmpty": "有貼紙尚未上色，請先填滿所有格子。",
+    "invalidColorCounts": "顏色數量不正確：{{face}} 面顏色數量不是 9（目前為 {{count}}）。",
+    "wrongOrientations": "檢測到不合法的角塊朝向：有 {{count}} 個角塊方向錯誤，可能是魔術方塊在拆開重組時裝錯了。可疑角塊已在畫面上以橘色閃爍標記。",
+    "wrongOrientations2x2": "檢測到非法角塊朝向，可能是實體方塊曾被扭轉過。可疑角塊已以橘色閃爍標示。"
+  },
+  "colors": {
+    "white": "白",
+    "red": "紅",
+    "green": "綠",
+    "yellow": "黃",
+    "orange": "橘",
+    "blue": "藍"
+  },
+  "faces": {
+    "U": "上層",
+    "R": "右層",
+    "F": "前層",
+    "D": "下層",
+    "L": "左層",
+    "B": "後層"
+  },
+  "turns": {
+    "cw": "順時針 90°",
+    "half": "180°",
+    "ccw": "逆時針 90°"
+  },
+  "phases": {
+    "lbl_2x2_p1": "第一階段：復原第一層",
+    "lbl_2x2_p2": "第二階段：對齊底面方向 (OLL)",
+    "lbl_2x2_p3": "第三階段：調整底層位置 (PLL)",
+    "optimal_2x2": "雙向尋優最速解",
+    "lbl_3x3_p1": "第一層：白色十字",
+    "lbl_3x3_p2": "第一層：白色角塊",
+    "lbl_3x3_p3": "第二層：中層稜塊",
+    "lbl_3x3_p4": "第三層：黃十字定向",
+    "lbl_3x3_p5": "第三層：黃角定向",
+    "lbl_3x3_p6": "第三層：頂角置換",
+    "lbl_3x3_p7": "第三層：頂稜置換",
+    "optimal_3x3": "Kociemba 最速解還原步驟"
+  },
+  "algorithms": {
+    "sune": "Sune (小魚 1)",
+    "antisune": "Anti-Sune (小魚 2)",
+    "h": "H (雙魚)",
+    "pi": "Pi (十字)",
+    "headlights": "Headlights (U 字)",
+    "chameleon": "Chameleon (T 字)",
+    "bowtie": "Bowtie (L 字)",
+    "adjacent": "相鄰角塊交換 (T-perm)",
+    "diagonal": "對角角塊交換 (Y-perm)"
+  }
+}

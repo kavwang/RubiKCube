@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "./components.css";
+
+/* Base variables for light/dark theme */
+:root {
+  /* Font Families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Noto Sans TC", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Theme variables - Light Mode (Default) */
+  --surface-bg: #f5f5f7;
+  --surface-panel: rgba(255, 255, 255, 0.7);
+  --surface-card: rgba(255, 255, 255, 0.85);
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --border-primary: rgba(0, 0, 0, 0.08);
+  --shadow-apple: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --glass-saturate: 180%;
+  --glass-blur: 20px;
+}
+
+/* Dark Mode support (explicit .dark class or system prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --surface-bg: #1c1c1e;
+    --surface-panel: rgba(28, 28, 30, 0.65);
+    --surface-card: rgba(44, 44, 46, 0.75);
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --border-primary: rgba(255, 255, 255, 0.08);
+    --shadow-apple: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+:root.dark {
+  --surface-bg: #1c1c1e;
+  --surface-panel: rgba(28, 28, 30, 0.65);
+  --surface-card: rgba(44, 44, 46, 0.75);
+  --text-primary: #f5f5f7;
+  --text-secondary: #86868b;
+  --border-primary: rgba(255, 255, 255, 0.08);
+  --shadow-apple: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Tailwind configuration extensions */
+@theme {
+  --font-sans: var(--font-sans);
+  --color-surface-bg: var(--surface-bg);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-card: var(--surface-card);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent-blue: #007aff;
+  --color-accent-blue-hover: #0062cc;
+  --color-border-primary: var(--border-primary);
+  --radius-apple-btn: 10px;
+  --radius-apple-card: 16px;
+  --radius-apple-panel: 20px;
+}
+
+body {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}

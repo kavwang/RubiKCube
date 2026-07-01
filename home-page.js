@@ -1,4 +1,19 @@
-﻿import * as THREE from "three";
+import * as THREE from "three";
+import { AppHeader } from "./src/shared/components/AppHeader.js";
+import i18n from "./src/i18n/i18n.js";
+
+// Initialize i18n
+i18n.init();
+i18n.updateDOM();
+
+// Create Header
+const headerContainer = document.getElementById("header-container");
+if (headerContainer) {
+  new AppHeader(headerContainer, {
+    titleKey: "home.title",
+    showBackBtn: false
+  });
+}
 
 const FACE_COLORS = {
   U: "#ffffff",
@@ -10,15 +25,17 @@ const FACE_COLORS = {
 };
 
 function makePreview(el, n) {
+  if (!el) return;
+
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b1220);
 
   const camera = new THREE.PerspectiveCamera(44, el.clientWidth / el.clientHeight, 0.1, 100);
   const camDist = n === 3 ? 8.4 : 6.2;
   camera.position.set(camDist * 0.8, camDist * 0.68, camDist);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  // Enable alpha (transparency) so it matches both light/dark backgrounds automatically
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(el.clientWidth, el.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   el.appendChild(renderer.domElement);

@@ -1,85 +1,30 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>2x2 魔術方塊解題器</title>
+  <title data-i18n="home.card2x2.title">2x2 魔術方塊解題器</title>
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="./app-theme.css" />
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="./src/styles/main.css" />
 </head>
-<body>
-  <main class="app">
-    <section class="panel" id="controlPanel">
-      <div class="panel-header">
-        <h1>2x2 魔術方塊解題器</h1>
-        <div class="panel-header-actions">
-          <a class="btn btn-mini" href="./index.html">回首頁</a>
-          <button id="togglePanelBtn">收合選單</button>
-        </div>
-      </div>
+<body class="flex flex-col h-screen overflow-hidden bg-surface-bg text-text-primary transition-colors duration-300">
+  <!-- Dynamic Header Container -->
+  <div id="header-container"></div>
 
-      <div class="mode-toggle-container">
-        <button id="editModeBtn" class="mode-btn active">編輯顏色</button>
-        <button id="solveModeBtn" class="mode-btn">開始解題</button>
-      </div>
+  <!-- Main App Layout -->
+  <main class="flex-1 flex flex-col md:flex-row relative overflow-hidden">
+    <!-- Panel Container -->
+    <div id="panel-container"></div>
 
-      <div id="editPanel" class="mode-section">
-        <p class="hint">請選取色票，再點擊 3D 魔方貼紙上色。</p>
-        <div class="palette" id="palette"></div>
-        <div class="actions">
-          <button id="randomBtn" class="btn">隨機打亂</button>
-          <button id="fillSolvedBtn" class="btn">填入已復原</button>
-        </div>
-        <div class="actions" style="grid-template-columns: 1fr;">
-          <button id="clearBtn" class="btn btn-danger">清空顏色</button>
-        </div>
-      </div>
+    <!-- Viewer Container (Three.js Scene) -->
+    <section class="flex-1 relative h-[48vh] md:h-full overflow-hidden">
+      <!-- 3D Canvas Mounting Point -->
+      <div class="w-full h-full" id="viewer"></div>
 
-      <div id="solvePanel" class="mode-section hidden">
-        <div class="solver-toggle-container lbl-active">
-          <div class="solver-toggle-slider"></div>
-          <button id="lblBtn" class="solver-toggle-btn active">LBL 分層解法</button>
-          <button id="fastestBtn" class="solver-toggle-btn">雙向最速解</button>
-        </div>
-        <div class="actions main-solve">
-          <button id="solveBtn" class="btn btn-primary">開始求解</button>
-        </div>
-        <p class="hint" style="margin-top: 4px;">求解後可使用下方按鈕逐步觀看復原流程。</p>
-        <div class="actions secondary">
-          <button id="resetPlayBtn" class="btn" disabled>回到起點</button>
-          <button id="prevBtn" class="btn" disabled>上一步</button>
-          <button id="nextBtn" class="btn" disabled>下一步</button>
-          <button id="autoBtn" class="btn" disabled>自動播放</button>
-        </div>
+      <!-- FPS Counter Overlay -->
+      <div id="fpsCounter" class="absolute top-4 right-4 px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg border border-border-primary bg-surface-panel/40 backdrop-blur-md text-text-secondary select-none">
+        -- FPS
       </div>
-
-      <div class="status-container">
-        <div class="status-title">狀態提示</div>
-        <div class="status" id="status">初始化求解器中...</div>
-      </div>
-
-      <div class="steps-container">
-        <div class="steps-header">
-          <h2>解題步驟</h2>
-          <span id="stepCounter" class="step-counter">0 / 0</span>
-        </div>
-        <div class="steps">
-          <ol id="stepsList"></ol>
-        </div>
-      </div>
-    </section>
-
-    <section class="viewer-wrap">
-      <div id="viewer"></div>
-      <div id="fpsCounter" class="fps-counter">-- FPS</div>
     </section>
   </main>
 

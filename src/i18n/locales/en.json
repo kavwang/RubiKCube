@@ -1,0 +1,119 @@
+{
+  "home": {
+    "title": "Rubik's Cube Solver",
+    "subtitle": "Select the size you want to solve, and enter the corresponding 3D learning and solving page.",
+    "card2x2": {
+      "title": "2x2 Solver",
+      "desc": "Supports sticker painting input, solvability verification, and step-by-step optimal BFS playback.",
+      "enter": "Enter 2x2"
+    },
+    "card3x3": {
+      "title": "3x3 Solver",
+      "desc": "Input scramble formula to generate inverse steps, including LBL tutorials and Kociemba solver.",
+      "enter": "Enter 3x3"
+    }
+  },
+  "common": {
+    "backHome": "Home",
+    "collapsePanel": "Collapse Menu",
+    "expandPanel": "Expand Menu",
+    "editMode": "Edit Colors",
+    "solveMode": "Start Solving",
+    "randomScramble": "Random Scramble",
+    "fillSolved": "Reset to Solved",
+    "clearColors": "Clear Colors",
+    "solve": "Solve",
+    "autoPlay": "Auto Play",
+    "stopPlay": "Stop Play",
+    "prevStep": "Prev Step",
+    "nextStep": "Next Step",
+    "resetPlay": "Reset Play",
+    "stepsTitle": "Solution Steps",
+    "stepCounter": "Step",
+    "formulaLabel": "Scramble Formula",
+    "formulaPlaceholder": "e.g., R U R' U' F2",
+    "applyFormula": "Apply Scramble",
+    "themeToggle": "Toggle Theme",
+    "langToggle": "Language"
+  },
+  "solver": {
+    "lbl": "LBL Layer Method",
+    "fastest2x2": "Optimal BFS",
+    "fastest3x3": "Kociemba Solver"
+  },
+  "status": {
+    "initializing": "Initializing solver...",
+    "initializingDone": "Solver ready. Input colors and click 'Solve'.",
+    "pleaseScramble": "Please input or generate a scramble formula first.",
+    "solveReady": "Solve mode: Click 'Solve' to analyze.",
+    "editReady": "Edit mode: Select a palette color and tap a sticker to paint it.",
+    "solving": "Calculating solution...",
+    "solvedAlready": "The cube is already solved.",
+    "solverError": "Solver not initialized.",
+    "solveDone": "Solution found: {{n}} steps. Click 'Next' to start.",
+    "solveDoneOptimal": "Optimal solution generated: {{n}} steps.",
+    "solveDoneKociemba": "Kociemba solution generated: {{n}} steps.",
+    "solveDoneLBL": "LBL tutorial solution generated: {{n}} steps.",
+    "stepDescription": "Step {{current}} / {{total}} completed.",
+    "backToStart": "Returned to start.",
+    "backStep": "Stepped back to step {{current}} / {{total}}.",
+    "forwardStep": "Advanced to step {{current}} / {{total}}.",
+    "solvedComplete": "Completed! Cube is fully solved.",
+    "manualSolveInfo": "Reset to solved state. Please edit colors to match your cube, then solve.",
+    "clearedInfo": "Cleared! Select a color and tap stickers to edit.",
+    "notScrambled": "No solution found. Please click 'Solve' again.",
+    "solverErrorGeneric": "Solving error: {{msg}}",
+    "scrambleApplied": "Scramble applied, {{n}} steps.",
+    "invalidScramble": "Unsupported move token: {{token}} (Only U, R, F, D, L, B with 2 or ' are supported)",
+    "stickersEmpty": "Some stickers are not painted. Please paint all stickers first.",
+    "invalidColorCounts": "Incorrect color count: {{face}} face has {{count}} stickers (must be 9).",
+    "wrongOrientations": "Invalid corner orientations detected: {{count}} corners have incorrect twist. The cube might have been physically twisted or reassembled incorrectly. Suspect corners are flashing orange on screen.",
+    "wrongOrientations2x2": "Invalid corner orientations detected. The physical cube might have been twisted. Suspect corners are flashing orange."
+  },
+  "colors": {
+    "white": "White",
+    "red": "Red",
+    "green": "Green",
+    "yellow": "Yellow",
+    "orange": "Orange",
+    "blue": "Blue"
+  },
+  "faces": {
+    "U": "Up",
+    "R": "Right",
+    "F": "Front",
+    "D": "Down",
+    "L": "Left",
+    "B": "Back"
+  },
+  "turns": {
+    "cw": "Clockwise 90°",
+    "half": "180°",
+    "ccw": "Counter-Clockwise 90°"
+  },
+  "phases": {
+    "lbl_2x2_p1": "Phase 1: Solve First Layer",
+    "lbl_2x2_p2": "Phase 2: Align Bottom Orientation (OLL)",
+    "lbl_2x2_p3": "Phase 3: Permute Bottom Position (PLL)",
+    "optimal_2x2": "Optimal BFS Solution",
+    "lbl_3x3_p1": "Layer 1: White Cross",
+    "lbl_3x3_p2": "Layer 1: White Corners",
+    "lbl_3x3_p3": "Layer 2: Middle Edges",
+    "lbl_3x3_p4": "Layer 3: Yellow Cross Orientation",
+    "lbl_3x3_p5": "Layer 3: Yellow Corner Orientation",
+    "lbl_3x3_p6": "Layer 3: Corner Permutation",
+    "lbl_3x3_p7": "Layer 3: Edge Permutation",
+    "optimal_3x3": "Kociemba Solution Steps"
+  },
+  "algorithms": {
+    "sune": "Sune (Fish 1)",
+    "antisune": "Anti-Sune (Fish 2)",
+    "h": "H (Double Fish)",
+    "pi": "Pi (Cross)",
+    "headlights": "Headlights (U-shape)",
+    "chameleon": "Chameleon (T-shape)",
+    "bowtie": "Bowtie (L-shape)",
+    "adjacent": "Adjacent Swapping (T-perm)",
+    "diagonal": "Diagonal Swapping (Y-perm)"
+  }
+}

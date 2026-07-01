@@ -1,39 +1,71 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>魔術方塊解題入口</title>
+  <title data-i18n="home.title">魔術方塊解題器</title>
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="./home-page.css" />
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="./src/styles/main.css" />
 </head>
-<body>
-  <main class="home">
-    <section class="hero">
-      <h1>魔術方塊解題器</h1>
-      <p>選擇你要解的尺寸，進入對應的 3D 教學解題頁。</p>
+<body class="flex flex-col min-h-screen bg-surface-bg text-text-primary transition-colors duration-300">
+  <!-- Dynamic Header Container -->
+  <div id="header-container"></div>
+
+  <main class="flex-1 max-w-[1100px] w-full mx-auto px-6 py-12 flex flex-col justify-center items-center gap-12">
+    <!-- Hero Section -->
+    <section class="text-center flex flex-col gap-4 max-w-2xl">
+      <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-accent-blue to-green-500 bg-clip-text text-transparent pb-1" data-i18n="home.title">
+        魔術方塊解題器
+      </h2>
+      <p class="text-base sm:text-lg text-text-secondary leading-relaxed" data-i18n="home.subtitle">
+        選擇你要解的尺寸，進入對應的 3D 教學解題頁。
+      </p>
     </section>
 
-    <section class="cards">
-      <article class="card">
-        <div class="preview" id="preview2"></div>
-        <h2>2x2 解題</h2>
-        <p>支援貼紙上色輸入、可解狀態檢查、逐步播放。</p>
-        <a class="go" href="./two-by-two.html">進入 2x2</a>
+    <!-- Cards Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+      <!-- 2x2 Card -->
+      <article class="card-apple overflow-hidden flex flex-col group hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 cursor-pointer">
+        <!-- 3D Preview Container -->
+        <div class="relative w-full aspect-[16/10] bg-black/5 dark:bg-black/20" id="preview2"></div>
+        <div class="p-6 flex flex-col gap-3 flex-1 justify-between">
+          <div class="flex flex-col gap-2">
+            <h3 class="text-xl font-bold tracking-tight text-text-primary group-hover:text-accent-blue transition-colors duration-200" data-i18n="home.card2x2.title">
+              2x2 解題
+            </h3>
+            <p class="text-sm text-text-secondary leading-relaxed" data-i18n="home.card2x2.desc">
+              支援貼紙上色輸入、可解狀態檢查、逐步播放最佳解。
+            </p>
+          </div>
+          <a class="btn-apple btn-apple-primary w-full h-11 text-sm font-semibold rounded-xl mt-3 flex items-center justify-center gap-1.5" href="./two-by-two.html">
+            <span data-i18n="home.card2x2.enter">進入 2x2</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+        </div>
       </article>
 
-      <article class="card">
-        <div class="preview" id="preview3"></div>
-        <h2>3x3 解題</h2>
-        <p>輸入打亂公式，產生反解步驟，逐步復原展示。</p>
-        <a class="go" href="./three-by-three.html">進入 3x3</a>
+      <!-- 3x3 Card -->
+      <article class="card-apple overflow-hidden flex flex-col group hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 cursor-pointer">
+        <!-- 3D Preview Container -->
+        <div class="relative w-full aspect-[16/10] bg-black/5 dark:bg-black/20" id="preview3"></div>
+        <div class="p-6 flex flex-col gap-3 flex-1 justify-between">
+          <div class="flex flex-col gap-2">
+            <h3 class="text-xl font-bold tracking-tight text-text-primary group-hover:text-accent-blue transition-colors duration-200" data-i18n="home.card3x3.title">
+              3x3 解題
+            </h3>
+            <p class="text-sm text-text-secondary leading-relaxed" data-i18n="home.card3x3.desc">
+              輸入打亂公式，產生反解步驟，包含 LBL 教學與 Kociemba 最速解。
+            </p>
+          </div>
+          <a class="btn-apple btn-apple-primary w-full h-11 text-sm font-semibold rounded-xl mt-3 flex items-center justify-center gap-1.5" href="./three-by-three.html">
+            <span data-i18n="home.card3x3.enter">進入 3x3</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+        </div>
       </article>
     </section>
   </main>
