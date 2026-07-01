@@ -56,8 +56,23 @@ export class Panel {
     });
     this.panelEl.appendChild(this.contentEl);
 
+    // Sticky Footer area inside panel
+    this.footerEl = createElement('div', {
+      className: 'px-5 py-3.5 border-t border-border-primary bg-surface-panel/85 backdrop-blur-md flex flex-col gap-3 shrink-0 transition-all duration-300 hidden'
+    });
+    this.panelEl.appendChild(this.footerEl);
+
     this.updateUI();
     this.container.appendChild(this.panelEl);
+  }
+
+  showFooter(visible) {
+    this.footerVisible = visible;
+    if (visible && !this.collapsed) {
+      this.footerEl.classList.remove('hidden');
+    } else {
+      this.footerEl.classList.add('hidden');
+    }
   }
 
   updateUI() {
@@ -68,6 +83,7 @@ export class Panel {
       this.panelEl.classList.add('h-[64px]', 'md:h-[64px]', 'md:w-[380px]');
       this.panelEl.classList.remove('h-[52vh]', 'md:h-[calc(100vh-76px)]');
       this.contentEl.classList.add('opacity-0', 'pointer-events-none');
+      if (this.footerEl) this.footerEl.classList.add('hidden');
       this.toggleBtn.textContent = i18n.t('common.expandPanel');
       this.toggleBtn.setAttribute('data-i18n', 'common.expandPanel');
     } else {
@@ -75,6 +91,13 @@ export class Panel {
       this.panelEl.classList.remove('h-[64px]', 'md:h-[64px]');
       this.panelEl.classList.add('h-[52vh]', 'md:h-[calc(100vh-76px)]', 'md:w-[380px]');
       this.contentEl.classList.remove('opacity-0', 'pointer-events-none');
+      if (this.footerEl) {
+        if (this.footerVisible) {
+          this.footerEl.classList.remove('hidden');
+        } else {
+          this.footerEl.classList.add('hidden');
+        }
+      }
       this.toggleBtn.textContent = i18n.t('common.collapsePanel');
       this.toggleBtn.setAttribute('data-i18n', 'common.collapsePanel');
     }

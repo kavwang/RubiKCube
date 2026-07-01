@@ -186,11 +186,11 @@ export class TwoByTwoPageController {
     ]);
     this.solvePanelEl.appendChild(this.solveBtn);
 
-    this.statusBar = new StatusBar(this.solvePanelEl, {
+    this.statusBar = new StatusBar(this.panel.footerEl, {
       initialKey: "status.initializing"
     });
 
-    this.playbackControls = new PlaybackControls(this.solvePanelEl, {
+    this.playbackControls = new PlaybackControls(this.panel.footerEl, {
       onReset: () => this.handleResetPlay(),
       onPrev: () => this.playPrevStep(),
       onNext: () => this.playOneStep(),
@@ -237,12 +237,14 @@ export class TwoByTwoPageController {
       this.editPanelEl.classList.remove("hidden");
       this.solvePanelEl.classList.add("hidden");
       this.view.setAutoRotateEnabled(false);
+      this.panel.showFooter(false);
     } else {
       this.solvePanelEl.classList.remove("hidden");
       this.editPanelEl.classList.add("hidden");
       this.view.resetRootRotation();
       this.view.setAutoRotateEnabled(false);
       this.statusBar.setStatus("status.solveReady");
+      this.panel.showFooter(true);
     }
   }
 
