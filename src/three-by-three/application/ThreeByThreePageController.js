@@ -61,7 +61,7 @@ export class ThreeByThreePageController {
     this.cubeSource = "manual";
 
     // Solver Worker
-    this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js?v=" + Date.now(), import.meta.url), { type: "module" });
+    this.solverWorker = new Worker(new URL("./three-by-three-solver.worker.js", import.meta.url), { type: "module" });
     this.solverWorker.onmessage = this.handleSolverResponse.bind(this);
 
     // i18n setup
