@@ -1,5 +1,7 @@
 # Rubik Cube 魔術方塊教學解題器（2x2 / 3x3）
 
+[English README](README.en.md) | [線上展示 (Demo)](https://kavwang.github.io/RubiKCube/)
+
 <!-- TODO: 加入 Demo 截圖或 GIF -->
 <!-- ![Demo Screenshot](docs/demo-screenshot.png) -->
 
@@ -74,7 +76,6 @@ RubiKCube/
 ├─ three-by-three.js                 # 3x3 進入點 (Entry point)
 ├─ vite.config.js                    # Vite 打包工具設定檔
 ├─ package.json                      # NPM 腳本與相依套件定義
-├─ getting-started-zh-tw.md          # 快速入門指南（繁體中文）
 ├─ LICENSE                           # Apache License 2.0
 │
 ├─ .github/workflows/
