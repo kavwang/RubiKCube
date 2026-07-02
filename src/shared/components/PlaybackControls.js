@@ -25,6 +25,14 @@ export class PlaybackControls {
     this.updateUI();
   }
 
+  show(visible) {
+    if (visible) {
+      this.wrapper.classList.remove('hidden');
+    } else {
+      this.wrapper.classList.add('hidden');
+    }
+  }
+
   render() {
     // Container for playback buttons
     this.wrapper = createElement('div', {

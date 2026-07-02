@@ -201,6 +201,10 @@ export class TwoByTwoPageController {
       onStepClick: (stepIdx) => this.jumpToStep(stepIdx)
     });
 
+    // Show footer by default so status messages are visible
+    this.panel.showFooter(true);
+    this.playbackControls.show(false); // Hide playback buttons initially in edit mode
+
     this.panel.appendChild(this.solvePanelEl);
   }
 
@@ -237,14 +241,14 @@ export class TwoByTwoPageController {
       this.editPanelEl.classList.remove("hidden");
       this.solvePanelEl.classList.add("hidden");
       this.view.setAutoRotateEnabled(false);
-      this.panel.showFooter(false);
+      this.playbackControls.show(false); // Hide playback controls in edit mode
     } else {
       this.solvePanelEl.classList.remove("hidden");
       this.editPanelEl.classList.add("hidden");
       this.view.resetRootRotation();
       this.view.setAutoRotateEnabled(false);
       this.statusBar.setStatus("status.solveReady");
-      this.panel.showFooter(true);
+      this.playbackControls.show(true); // Show playback controls in solve mode
     }
   }
 

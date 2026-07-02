@@ -59,7 +59,7 @@ export class StatusBar {
 
     // Apply color depending on type
     this.dot.className = 'w-2 h-2 rounded-full animate-pulse';
-    this.wrapper.className = 'border rounded-2xl px-4 py-3 flex items-center gap-3 transition-all duration-300';
+    this.wrapper.className = 'statusBar border rounded-2xl px-4 py-3 flex items-center gap-3 transition-all duration-300';
 
     if (this.type === 'error') {
       this.dot.classList.add('bg-red-500');

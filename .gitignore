@@ -16,3 +16,7 @@ dist/
 build/
 coverage/
 
+# E2E Testing
+playwright-report/
+test-results/
+
